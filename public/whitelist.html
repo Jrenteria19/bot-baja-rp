@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Whitelist - BajaRP</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Staatliches&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="index.css">
+    <link rel="icon" href="https://media.discordapp.net/attachments/1481747743230656571/1500738582866821270/bajaRP_logo-Photoroom.png" type="image/x-icon">
+    <style>
+        /* Estilos específicos para la página de Whitelist */
+        body.whitelist-page {
+            background-image: linear-gradient(rgba(18, 18, 18, 0.8), rgba(18, 18, 18, 0.9)), url('https://media.discordapp.net/attachments/1481747743230656571/1500738582866821270/bajaRP_logo-Photoroom.png?ex=69f98738&is=69f835b8&hm=70794989a9d25b7117a9d58a9d01a7d89463a1d4f2e08ca070c6a3346f572433&=&format=webp&quality=lossless&width=1133&height=800');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .whitelist-container {
+            background: rgba(30, 30, 30, 0.85); /* Similar a --card-bg con opacidad */
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(139, 0, 0, 0.3); /* --primary-color subtle */
+            border-radius: 15px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+        }
+
+        .whitelist-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .whitelist-header h1 {
+            color: var(--gold-color);
+            font-family: 'Staatliches', sans-serif;
+            font-size: 3.5rem;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            text-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .whitelist-header p {
+            color: var(--text-color);
+            font-size: 1.1rem;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--text-light);
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            background: rgba(255, 87, 34, 0.05); /* --secondary-color glow */
+            box-shadow: 0 0 10px rgba(255, 87, 34, 0.2);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-group input[readonly] {
+            background: rgba(0, 0, 0, 0.6);
+            color: #888;
+            cursor: not-allowed;
+            border-color: transparent;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary-color);
+            color: var(--text-light);
+            border: none;
+            border-radius: 8px;
+            font-family: 'Staatliches', sans-serif;
+            font-size: 1.8rem;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(139, 0, 0, 0.4);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            background: #a00000;
+            box-shadow: 0 8px 25px rgba(139, 0, 0, 0.6);
+        }
+
+        .submit-btn:disabled {
+            background: #444;
+            color: #888;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .notification {
+            display: none;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .notification.success {
+            display: block;
+            background: rgba(46, 204, 113, 0.1);
+            border: 1px solid var(--success-color);
+            color: var(--success-color);
+        }
+
+        .notification.error {
+            display: block;
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid var(--danger-color);
+            color: var(--danger-color);
+        }
+        
+        /* Ocultar formulario hasta que cargue el usuario */
+        #whitelist-form {
+            display: none;
+        }
+        .loading-text {
+            text-align: center;
+            color: var(--secondary-color);
+            font-size: 1.5rem;
+            margin: 40px 0;
+            font-family: 'Staatliches', sans-serif;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+
+<body class="whitelist-page">
+
+    <!-- Navbar Global -->
+    <nav class="navbar">
+        <div class="container navbar-content">
+            <a href="index.html" class="logo-link">
+                <img src="https://media.discordapp.net/attachments/1481747743230656571/1500738582866821270/bajaRP_logo-Photoroom.png?ex=69f98738&is=69f835b8&hm=70794989a9d25b7117a9d58a9d01a7d89463a1d4f2e08ca070c6a3346f572433&=&format=webp&quality=lossless&width=1133&height=800"
+                    alt="BajaRP Logo" class="logo">
+            </a>
+
+            <div class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </div>
+
+            <ul class="nav-links">
+                <li><a href="index.html"><i class="fas fa-home"></i> Inicio</a></li>
+                <li><a href="normativas.html"><i class="fas fa-book"></i> Normativas</a></li>
+                <li><a href="beneficios.html"><i class="fas fa-star"></i> Beneficios</a></li>
+                <li class="mobile-only"><a href="/auth/discord" class="nav-cta"><i class="fas fa-sign-in-alt"></i> Iniciar Sesión</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <a href="/auth/discord" class="nav-cta"><i class="fas fa-sign-in-alt"></i> Iniciar Sesión</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="whitelist-container">
+        <div class="whitelist-header">
+            <h1>Formulario de Whitelist</h1>
+            <p>Demuestra tus conocimientos sobre Roleplay y nuestras normativas para unirte a BajaRP.</p>
+        </div>
+
+        <div id="notification" class="notification"></div>
+
+        <div id="loading" class="loading-text">
+            <i class="fas fa-spinner fa-spin"></i> Cargando tu información de Discord...
+        </div>
+
+        <form id="whitelist-form">
+            <!-- Información del Usuario -->
+            <div class="form-group">
+                <label for="discord_name"><i class="fab fa-discord"></i> Tu Nombre de Discord (Automático)</label>
+                <input type="text" id="discord_name" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="roblox_name"><i class="fas fa-gamepad"></i> Tu Nombre de Usuario en Roblox</label>
+                <input type="text" id="roblox_name" placeholder="Ej: JuanPerez123" minlength="4" required>
+            </div>
+
+            <!-- Preguntas de Whitelist -->
+            <div class="form-group">
+                <label for="q1">1. ¿Qué es el Roleplay y qué entiendes por Valorar Vida (NVL)? Da un ejemplo claro.</label>
+                <textarea id="q1" placeholder="Escribe tu respuesta aquí detalladamente... (Mínimo 30 caracteres)" minlength="30" required onpaste="return false;" oncopy="return false;" oncut="return false;" autocomplete="off" spellcheck="false"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="q2">2. Menciona 3 normativas básicas de nuestro servidor BajaRP y explícalas brevemente.</label>
+                <textarea id="q2" placeholder="Revisa el canal o la página de normativas si no las recuerdas... (Mínimo 30 caracteres)" minlength="30" required onpaste="return false;" oncopy="return false;" oncut="return false;" autocomplete="off" spellcheck="false"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="q3">3. ¿Por qué te gustaría formar parte de la comunidad de BajaRP?</label>
+                <textarea id="q3" placeholder="Queremos conocer tus intenciones en nuestra comunidad... (Mínimo 30 caracteres)" minlength="30" required onpaste="return false;" oncopy="return false;" oncut="return false;" autocomplete="off" spellcheck="false"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="q4">4. ¿Qué significa RDM (Random Death Match)?</label>
+                <select id="q4" required style="width: 100%; padding: 12px 15px; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: var(--text-light); font-family: 'Poppins', sans-serif; font-size: 1rem; appearance: none;">
+                    <option value="" disabled selected>Selecciona una opción...</option>
+                    <option value="A) Matar a alguien sin rol previo ni justificación.">A) Matar a alguien sin rol previo ni justificación.</option>
+                    <option value="B) Correr por el mapa sin sentido.">B) Correr por el mapa sin sentido.</option>
+                    <option value="C) Usar vehículos para matar a la gente de forma justificada.">C) Usar vehículos para matar a la gente de forma justificada.</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="q5">5. Si te asaltan 3 personas armadas y tú solo tienes una pistola, ¿qué haces?</label>
+                <select id="q5" required style="width: 100%; padding: 12px 15px; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: var(--text-light); font-family: 'Poppins', sans-serif; font-size: 1rem; appearance: none;">
+                    <option value="" disabled selected>Selecciona una opción...</option>
+                    <option value="A) Saco la pistola y trato de matar a los 3 porque soy muy rápido.">A) Saco la pistola y trato de matar a los 3 porque soy muy rápido.</option>
+                    <option value="B) Valoro mi vida (NVL), levanto las manos y sigo el rol.">B) Valoro mi vida (NVL), levanto las manos y sigo el rol.</option>
+                    <option value="C) Me desconecto del servidor para no perder mis cosas.">C) Me desconecto del servidor para no perder mis cosas.</option>
+                </select>
+            </div>
+
+            <button type="submit" id="submit-btn" class="submit-btn">Enviar Solicitud <i class="fas fa-paper-plane"></i></button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            const loadingDiv = document.getElementById("loading");
+            const form = document.getElementById("whitelist-form");
+            const notification = document.getElementById("notification");
+            const btn = document.getElementById("submit-btn");
+
+            // 1. Obtener la información del usuario logueado
+            try {
+                const res = await fetch('/api/user_info');
+                if (!res.ok) {
+                    throw new Error("No estás logueado en Discord.");
+                }
+                const data = await res.json();
+                document.getElementById("discord_name").value = data.discord_name;
+                
+                loadingDiv.style.display = "none";
+                form.style.display = "block";
+            } catch (error) {
+                loadingDiv.style.display = "none";
+                notification.className = "notification error";
+                notification.innerHTML = "<i class='fas fa-exclamation-triangle'></i> Debes iniciar sesión con Discord primero.";
+                
+                setTimeout(() => {
+                    window.location.href = "/";
+                }, 3000);
+            }
+
+            // 2. Manejar el envío del formulario
+            form.addEventListener("submit", async (e) => {
+                e.preventDefault();
+                
+                // Desactivar botón para evitar dobles envíos
+                btn.disabled = true;
+                btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> Enviando...";
+
+                const payload = {
+                    roblox_name: document.getElementById("roblox_name").value,
+                    q1: document.getElementById("q1").value,
+                    q2: document.getElementById("q2").value,
+                    q3: document.getElementById("q3").value,
+                    q4: document.getElementById("q4").value,
+                    q5: document.getElementById("q5").value
+                };
+
+                try {
+                    const response = await fetch('/submit_whitelist', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        notification.className = "notification success";
+                        notification.innerHTML = `<i class='fas fa-check-circle'></i> ${result.message}<br><br><strong>Serás redirigido al inicio en 5 segundos...</strong>`;
+                        form.style.display = "none";
+                        
+                        setTimeout(() => {
+                            window.location.href = "/";
+                        }, 5000);
+                    } else {
+                        notification.className = "notification error";
+                        notification.innerHTML = `<i class='fas fa-exclamation-circle'></i> ${result.error}`;
+                        btn.disabled = false;
+                        btn.innerHTML = "Enviar Solicitud <i class='fas fa-paper-plane'></i>";
+                    }
+
+                    // Scrollear hacia arriba para ver la notificación
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                } catch (err) {
+                    notification.className = "notification error";
+                    notification.innerHTML = "<i class='fas fa-exclamation-circle'></i> Ocurrió un error al conectar con el servidor.";
+                    btn.disabled = false;
+                    btn.innerHTML = "Enviar Solicitud <i class='fas fa-paper-plane'></i>";
+                }
+            });
+        });
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Normativas Oficiales - BajaRP Comunidad de rol serio en Emergency Response: Liberty County.">
+    <meta name="keywords" content="Roblox, ER:LC, Roleplay, BajaRP, Reglas, Normativas">
+    <title>Normativas | BajaRP</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Staatliches&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="index.css">
+    <link rel="icon"
+        href="https://media.discordapp.net/attachments/1481747743230656571/1500738582866821270/bajaRP_logo-Photoroom.png?ex=69f98738&is=69f835b8&hm=70794989a9d25b7117a9d58a9d01a7d89463a1d4f2e08ca070c6a3346f572433&=&format=webp&quality=lossless&width=1133&height=800"
+        type="image/x-icon">
+
+    <style>
+        .page-header {
+            padding: 150px 0 60px;
+            background: linear-gradient(to bottom, var(--darker-bg), var(--dark-bg));
+            text-align: center;
+            border-bottom: 1px solid rgba(230, 0, 0, 0.1);
+        }
+
+        .page-title {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px var(--accent-glow);
+            color: var(--text-light);
+        }
+
+        .page-title span {
+            color: var(--primary-color);
+        }
+
+        .page-subtitle {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .normativas-wrapper {
+            background-color: var(--dark-bg);
+            padding: 40px 0 80px 0;
+        }
+
+        .normativas-layout {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+        }
+
+        .normativas-sidebar {
+            flex: 0 0 320px;
+            position: sticky;
+            top: 90px;
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(230, 0, 0, 0.1);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 15px 12px 40px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--dark-bg);
+            color: var(--text-light);
+            outline: none;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 10px rgba(230, 0, 0, 0.1);
+        }
+
+        .category-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            max-height: 55vh;
+            overflow-y: auto;
+        }
+
+        .category-list::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .category-list::-webkit-scrollbar-thumb {
+            background: rgba(230, 0, 0, 0.3);
+            border-radius: 5px;
+        }
+
+        .category-list li a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            color: var(--text-color);
+            text-decoration: none;
+            border-radius: 6px;
+            margin-bottom: 5px;
+            transition: background 0.3s, color 0.3s;
+            font-weight: 500;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+
+        .category-list li a:hover,
+        .category-list li a.active {
+            background: rgba(230, 0, 0, 0.1);
+            color: var(--primary-color);
+        }
+
+        .category-list li a i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .normativas-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        /* Accordion Styles */
+        .rule-card-accordion {
+            background-color: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            scroll-margin-top: 100px;
+        }
+
+        .rule-card-accordion.hidden {
+            display: none;
+        }
+
+        .rule-header {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.3s;
+        }
+
+        .rule-header:hover {
+            background: rgba(230, 0, 0, 0.05);
+        }
+
+        .rule-header-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .rule-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            color: var(--text-light);
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+        }
+
+        .rule-header i.icon-main {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .rule-header i.icon-arrow {
+            color: rgba(255, 255, 255, 0.5);
+            transition: transform 0.4s ease;
+        }
+
+        .rule-card-accordion.active {
+            border-left: 3px solid var(--primary-color);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .rule-card-accordion.active .rule-header {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(230, 0, 0, 0.05);
+        }
+
+        .rule-card-accordion.active .rule-header i.icon-arrow {
+            transform: rotate(180deg);
+            color: var(--primary-color);
+        }
+
+        .rule-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-in-out;
+            background: var(--darker-bg);
+        }
+
+        .rule-body-content {
+            padding: 25px;
+            color: var(--text-color);
+            line-height: 1.7;
+        }
+
+        .rule-body-content p {
+            margin-bottom: 15px;
+        }
+
+        .rule-body-content ul {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .rule-body-content li {
+            margin-bottom: 8px;
+        }
+
+        .rule-body-content li::marker {
+            color: var(--primary-color);
+        }
+
+        .rule-body-content h4,
+        .rule-body-content h5 {
+            color: var(--text-light);
+            margin: 20px 0 10px 0;
+        }
+
+        .rule-body-content h4 {
+            font-size: 1.2rem;
+            border-bottom: 1px solid rgba(230, 0, 0, 0.2);
+            padding-bottom: 5px;
+            display: inline-block;
+            color: var(--primary-color);
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 50px 20px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 1.2rem;
+            display: none;
+            background: var(--card-bg);
+            border-radius: 8px;
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        .no-results i {
+            font-size: 3rem;
+            color: rgba(230, 0, 0, 0.3);
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        @media (max-width: 900px) {
+            .normativas-layout {
+                flex-direction: column;
+            }
+
+            .normativas-sidebar {
+                width: 100%;
+                flex: none;
+                position: relative;
+                top: 0;
+                margin-bottom: 20px;
+                max-height: auto;
+            }
+
+            .category-list {
+                max-height: 300px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container navbar-content">
+            <a href="index.html" class="logo-link">
+                <img src="https://media.discordapp.net/attachments/1481747743230656571/1500738582866821270/bajaRP_logo-Photoroom.png?ex=69f98738&is=69f835b8&hm=70794989a9d25b7117a9d58a9d01a7d89463a1d4f2e08ca070c6a3346f572433&=&format=webp&quality=lossless&width=1133&height=800"
+                    alt="BajaRP Logo" class="logo">
+            </a>
+
+            <div class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </div>
+
+            <ul class="nav-links">
+                <li><a href="index.html"><i class="fas fa-home"></i> Inicio</a></li>
+                <li><a href="normativas.html" class="active"><i class="fas fa-book"></i> Normativas</a></li>
+                <li><a href="beneficios.html"><i class="fas fa-star"></i> Beneficios</a></li>
+                <li class="mobile-only"><a href="/auth/discord" class="nav-cta"><i class="fas fa-sign-in-alt"></i> Iniciar Sesión</a>
+                </li>
+            </ul>
+
+            <div class="nav-actions">
+                <a href="/auth/discord" class="nav-cta"><i class="fas fa-sign-in-alt"></i> Iniciar Sesión</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="page-header" data-aos="fade-down">
+        <div class="container">
+            <h1 class="page-title">Normativas del <span>Servidor</span></h1>
+            <p class="page-subtitle">El desconocimiento de la normativa no exime de su cumplimiento.</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <section class="normativas-wrapper">
+        <div class="container normativas-layout">
+
+            <!-- Sidebar / Buscador -->
+            <aside class="normativas-sidebar" data-aos="fade-right">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="search-rules" placeholder="Buscar normativa o regla...">
+                </div>
+                <ul class="category-list" id="category-list">
+                    <!-- JS rellena esto -->
+                </ul>
+            </aside>
+
+            <!-- Acordeones -->
+            <main class="normativas-content" id="normativas-content" data-aos="fade-left">
+                <!-- JS rellena esto -->
+                <div class="no-results" id="no-results">
+                    <i class="fas fa-search-minus"></i>
+                    No se encontraron normativas que coincidan con tu búsqueda.
+                </div>
+            </main>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h3>BajaRP</h3>
+                    <p>La mejor comunidad de roleplay. Vive tu segunda vida en BajaRP.</p>
+                </div>
+
+                <div class="footer-col">
+                    <h3>Enlaces Rápidos</h3>
+                    <ul>
+                        <li><a href="index.html">Inicio</a></li>
+                        <li><a href="apelaciones.html">Apelaciones</a></li>
+                        <li><a href="beneficios.html">Beneficios</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h3>Contacto</h3>
+                    <div class="social-links">
+                        <a href="https://discord.gg/UBy2a7NtAb"><i class="fab fa-discord"></i></a>
+                        <a href="https://www.tiktok.com/@paletorpoficial?is_from_webapp=1&sender_device=pc"><i
+                                class="fab fa-tiktok"></i></a>
+                        <a href="https://www.youtube.com/@paletorp"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2026 BajaRP. Todos los derechos reservados para Junior Renteria.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script src="normativas.js"></script>
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            AOS.init({ once: true, offset: 50 });
+
+            const categoryList = document.getElementById('category-list');
+            const normativasContent = document.getElementById('normativas-content');
+            const searchInput = document.getElementById('search-rules');
+            const noResults = document.getElementById('no-results');
+
+            if (typeof normativasData !== 'undefined') {
+
+                // Generar HTML de la lista y los acordeones
+                normativasData.forEach((item, index) => {
+                    // Sidebar
+                    const li = document.createElement('li');
+                    li.innerHTML = `<a onclick="openAccordion('${item.id}')"><i class="${item.icon}"></i> ${item.title}</a>`;
+                    categoryList.appendChild(li);
+
+                    // Accordion HTML
+                    const accordion = document.createElement('div');
+                    accordion.className = 'rule-card-accordion';
+                    accordion.id = `rule-${item.id}`;
+                    accordion.innerHTML = `
+                        <div class="rule-header" onclick="toggleAccordion('${item.id}')">
+                            <div class="rule-header-content">
+                                <i class="${item.icon} icon-main"></i>
+                                <h3>${item.title}</h3>
+                            </div>
+                            <i class="fas fa-chevron-down icon-arrow"></i>
+                        </div>
+                        <div class="rule-body" id="body-${item.id}">
+                            <div class="rule-body-content">
+                                ${item.content}
+                            </div>
+                        </div>
+                    `;
+                    // Inserta el acordeón ANTES del div de "no results"
+                    normativasContent.insertBefore(accordion, noResults);
+                });
+
+                // Lógica de Buscador
+                searchInput.addEventListener('input', (e) => {
+                    const term = e.target.value.toLowerCase();
+                    let found = false;
+
+                    document.querySelectorAll('.rule-card-accordion').forEach(card => {
+                        const id = card.id.replace('rule-', '');
+                        // Buscar la data cruda
+                        const dataMatch = normativasData.find(d => d.id === id);
+                        if (!dataMatch) return;
+
+                        const text = (dataMatch.title + ' ' + dataMatch.content).toLowerCase();
+
+                        if (text.includes(term)) {
+                            card.classList.remove('hidden');
+                            found = true;
+                        } else {
+                            card.classList.add('hidden');
+                        }
+                    });
+
+                    noResults.style.display = found ? 'none' : 'block';
+                });
+            }
+        });
+
+        // Funciones de Acordeón
+        window.toggleAccordion = function (id) {
+            const card = document.getElementById(`rule-${id}`);
+            const body = document.getElementById(`body-${id}`);
+
+            // Cerrar todos los demás
+            document.querySelectorAll('.rule-card-accordion').forEach(otherCard => {
+                if (otherCard.id !== `rule-${id}`) {
+                    otherCard.classList.remove('active');
+                    const otherBody = otherCard.querySelector('.rule-body');
+                    if (otherBody) otherBody.style.maxHeight = null;
+                }
+            });
+
+            // Toggle el clickeado
+            if (card.classList.contains('active')) {
+                card.classList.remove('active');
+                body.style.maxHeight = null;
+            } else {
+                card.classList.add('active');
+                body.style.maxHeight = body.scrollHeight + "px";
+            }
+        };
+
+        window.openAccordion = function (id) {
+            const card = document.getElementById(`rule-${id}`);
+            // Solo abrir y scrollear
+            if (!card.classList.contains('active')) {
+                toggleAccordion(id);
+            }
+            card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        };
+    </script>
+</body>
+
+</html>

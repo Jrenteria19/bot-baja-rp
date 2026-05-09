@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Beneficios y Donaciones - BajaRP Comunidad de rol serio en Emergency Response: Liberty County.">
+    <meta name="keywords" content="Roblox, ER:LC, Roleplay, BajaRP, Beneficios, Boost, VIP">
+    <title>Beneficios | BajaRP</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Staatliches&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="index.css">
+    <link rel="icon"
+        href="https://media.discordapp.net/attachments/1481747743230656571/1500738582866821270/bajaRP_logo-Photoroom.png?ex=69f98738&is=69f835b8&hm=70794989a9d25b7117a9d58a9d01a7d89463a1d4f2e08ca070c6a3346f572433&=&format=webp&quality=lossless&width=1133&height=800"
+        type="image/x-icon">
+
+    <style>
+        .page-header {
+            padding: 150px 0 60px;
+            background: linear-gradient(to bottom, var(--darker-bg), var(--dark-bg));
+            text-align: center;
+            border-bottom: 1px solid rgba(230, 0, 0, 0.1);
+        }
+
+        .page-title {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px var(--accent-glow);
+            color: var(--text-light);
+            font-family: 'Staatliches', cursive;
+            letter-spacing: 2px;
+        }
+
+        .page-title span {
+            color: #f47fff;
+            /* Discord Boost Pink */
+            text-shadow: 0 0 15px rgba(244, 127, 255, 0.5);
+        }
+
+        .page-subtitle {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .benefits-section {
+            padding: 80px 0;
+            background-color: var(--dark-bg);
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .benefit-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(244, 127, 255, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+
+        .benefit-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(244, 127, 255, 0.15);
+            border-color: rgba(244, 127, 255, 0.4);
+        }
+
+        .benefit-header {
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+        }
+
+        .boost-x1 {
+            background: linear-gradient(135deg, rgba(244, 127, 255, 0.05), rgba(88, 101, 242, 0.05));
+        }
+
+        .boost-x2 {
+            background: linear-gradient(135deg, rgba(157, 0, 255, 0.15), rgba(230, 0, 0, 0.05));
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: 15px;
+            right: -30px;
+            background: var(--primary-color);
+            color: #000;
+            font-size: 0.75rem;
+            font-weight: bold;
+            padding: 5px 30px;
+            transform: rotate(45deg);
+            box-shadow: 0 2px 10px rgba(230, 0, 0, 0.4);
+        }
+
+        .benefit-header i {
+            font-size: 3.5rem;
+            color: #f47fff;
+            margin-bottom: 15px;
+            text-shadow: 0 0 15px rgba(244, 127, 255, 0.4);
+        }
+
+        .benefit-header h3 {
+            font-family: 'Staatliches', cursive;
+            font-size: 2.5rem;
+            color: var(--text-light);
+            letter-spacing: 2px;
+            margin: 0;
+        }
+
+        .benefit-header p {
+            color: rgba(255, 255, 255, 0.6);
+            margin: 5px 0 0 0;
+            font-size: 0.95rem;
+        }
+
+        .benefit-list {
+            list-style: none;
+            padding: 30px;
+            margin: 0;
+        }
+
+        .benefit-list li {
+            margin-bottom: 18px;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.05rem;
+        }
+
+        .benefit-list li:last-child {
+            margin-bottom: 0;
+        }
+
+        .benefit-list li i {
+            color: #f47fff;
+            font-size: 1.1rem;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .process-box {
+            background: rgba(88, 101, 242, 0.05);
+            /* Discord Blurple */
+            border: 1px solid rgba(88, 101, 242, 0.2);
+            border-radius: 12px;
+            padding: 40px 30px;
+            text-align: center;
+            margin-top: 60px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .process-box h3 {
+            color: #ffffff;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            font-family: 'Staatliches', cursive;
+            letter-spacing: 1px;
+        }
+
+        .process-box h3 i {
+            color: #5865F2;
+            margin-right: 10px;
+        }
+
+        .process-box p {
+            color: var(--text-color);
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .discord-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background-color: #5865F2;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .discord-btn:hover {
+            background-color: #4752C4;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(88, 101, 242, 0.4);
+            color: white;
+        }
+
+        .coming-soon {
+            text-align: center;
+            margin-top: 60px;
+            padding: 50px 30px;
+            background: repeating-linear-gradient(45deg,
+                    rgba(230, 0, 0, 0.02),
+                    rgba(230, 0, 0, 0.02) 15px,
+                    rgba(0, 0, 0, 0) 15px,
+                    rgba(0, 0, 0, 0) 30px);
+            border: 1px dashed rgba(230, 0, 0, 0.2);
+            border-radius: 12px;
+        }
+
+        .coming-soon i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            animation: pulse-glow 2s infinite;
+        }
+
+        .coming-soon h3 {
+            font-size: 2rem;
+            font-family: 'Staatliches', cursive;
+            color: var(--text-light);
+            letter-spacing: 1.5px;
+            margin-bottom: 10px;
+        }
+
+        .coming-soon p {
+            color: var(--text-color);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        @keyframes pulse-glow {
+            0% {
+                transform: scale(1);
+                text-shadow: 0 0 0 rgba(230, 0, 0, 0);
+            }
+
+            50% {
+                transform: scale(1.1);
+                text-shadow: 0 0 20px rgba(230, 0, 0, 0.5);
+            }
+
+            100% {
+                transform: scale(1);
+                text-shadow: 0 0 0 rgba(230, 0, 0, 0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container navbar-content">
+            <a href="index.html" class="logo-link">
+                <img src="https://media.discordapp.net/attachments/1481747743230656571/1500738582866821270/bajaRP_logo-Photoroom.png?ex=69f98738&is=69f835b8&hm=70794989a9d25b7117a9d58a9d01a7d89463a1d4f2e08ca070c6a3346f572433&=&format=webp&quality=lossless&width=1133&height=800"
+                    alt="BajaRP Logo" class="logo">
+            </a>
+
+            <div class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </div>
+
+            <ul class="nav-links">
+                <li><a href="index.html"><i class="fas fa-home"></i> Inicio</a></li>
+                <li><a href="normativas.html"><i class="fas fa-book"></i> Normativas</a></li>
+                <li><a href="beneficios.html" class="active"><i class="fas fa-star"></i> Beneficios</a></li>
+                <li class="mobile-only"><a href="/auth/discord" class="nav-cta"><i class="fas fa-sign-in-alt"></i> Iniciar Sesión</a>
+                </li>
+            </ul>
+
+            <div class="nav-actions">
+                <a href="/auth/discord" class="nav-cta"><i class="fas fa-sign-in-alt"></i> Iniciar Sesión</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="page-header" data-aos="fade-down">
+        <div class="container">
+            <h1 class="page-title">Beneficios por <span>Boosteos</span></h1>
+            <p class="page-subtitle">Apoyar al servidor mediante Boost brinda recompensas exclusivas pensadas para mejorar tu experiencia dentro de Mazatlán RP. Entre más alto sea tu nivel de Boost, mayores serán los beneficios que recibirás.</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <section class="benefits-section">
+        <div class="container">
+
+            <div class="benefits-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); max-width: 1100px;">
+
+                <!-- Nivel 1 -->
+                <div class="benefit-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="benefit-header boost-x1">
+                        <i class="fas fa-gem"></i>
+                        <h3>Nivel 1</h3>
+                        <p>1 Boost</p>
+                    </div>
+                    <div style="padding: 0 20px; text-align: center; color: rgba(255,255,255,0.7); font-size: 0.9rem; margin-top: 15px;">Quienes aportan 1 Boost obtienen:</div>
+                    <ul class="benefit-list">
+                        <li><i class="fas fa-check-circle"></i> Rol exclusivo "Boost I"</li>
+                        <li><i class="fas fa-check-circle"></i> Rol totalmente personalizado</li>
+                        <li><i class="fas fa-check-circle"></i> Permiso para agregar emojis y stickers al servidor</li>
+                        <li><i class="fas fa-check-circle"></i> Acceso a vehículos de hasta 300K dentro del rol</li>
+                        <li><i class="fas fa-check-circle"></i> Permiso especial de arma: PPSH</li>
+                        <li><i class="fas fa-check-circle"></i> Pago semanal: 20K</li>
+                    </ul>
+                    <div style="padding: 0 20px 20px; text-align: center; color: rgba(255,255,255,0.7); font-size: 0.85rem; font-style: italic;">Beneficios ideales para quienes desean una presencia más distintiva dentro de la ciudad.</div>
+                </div>
+
+                <!-- Nivel 2 -->
+                <div class="benefit-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="benefit-header boost-x2">
+                        <i class="fas fa-gem" style="text-shadow: 0 0 25px rgba(244, 127, 255, 0.8);"></i>
+                        <h3>Nivel 2</h3>
+                        <p>2 Boosts</p>
+                    </div>
+                    <div style="padding: 0 20px; text-align: center; color: rgba(255,255,255,0.7); font-size: 0.9rem; margin-top: 15px;">Los usuarios con 2 Boosts reciben beneficios avanzados:</div>
+                    <ul class="benefit-list">
+                        <li><i class="fas fa-check-circle"></i> Rol exclusivo "Boost II"</li>
+                        <li><i class="fas fa-check-circle"></i> Rol personalizado de mayor prioridad</li>
+                        <li><i class="fas fa-check-circle"></i> Participación en lives y contenido oficial del servidor</li>
+                        <li><i class="fas fa-check-circle"></i> Contacto directo con Fundación</li>
+                        <li><i class="fas fa-check-circle"></i> Uso de vehículos de hasta 500K</li>
+                        <li><i class="fas fa-check-circle"></i> Posibilidad de tener dos trabajos principales</li>
+                        <li><i class="fas fa-check-circle"></i> Arma especial disponible: PPSH</li>
+                        <li><i class="fas fa-check-circle"></i> Pago semanal: 20K</li>
+                    </ul>
+                    <div style="padding: 0 20px 20px; text-align: center; color: rgba(255,255,255,0.7); font-size: 0.85rem; font-style: italic;">Perfecto para quienes buscan influencia, movilidad y presencia dentro del rol.</div>
+                </div>
+
+                <!-- Nivel 3 -->
+                <div class="benefit-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="popular-badge">PREMIUM</div>
+                    <div class="benefit-header boost-x2" style="background: linear-gradient(135deg, rgba(230, 0, 0, 0.15), rgba(157, 0, 255, 0.15));">
+                        <i class="fas fa-crown" style="text-shadow: 0 0 25px rgba(230, 0, 0, 0.8);"></i>
+                        <h3>Nivel 3</h3>
+                        <p>3 Boosts</p>
+                    </div>
+                    <div style="padding: 0 20px; text-align: center; color: rgba(255,255,255,0.7); font-size: 0.9rem; margin-top: 15px;">El nivel más alto ofrece ventajas premium:</div>
+                    <ul class="benefit-list">
+                        <li><i class="fas fa-check-circle"></i> Rol exclusivo "Boost III"</li>
+                        <li><i class="fas fa-check-circle"></i> Rol personalizado prioritario</li>
+                        <li><i class="fas fa-check-circle"></i> Participación en lives, eventos y contenido oficial</li>
+                        <li><i class="fas fa-check-circle"></i> Contacto directo con Fundación</li>
+                        <li><i class="fas fa-check-circle"></i> Crear tu propia empresa con liverys</li>
+                        <li><i class="fas fa-check-circle"></i> Acceso a todos los vehículos disponibles</li>
+                        <li><i class="fas fa-check-circle"></i> Acceso a todas las armas del servidor</li>
+                        <li><i class="fas fa-check-circle"></i> Sorteos y eventos exclusivos</li>
+                        <li><i class="fas fa-check-circle"></i> Pago semanal: 40K</li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Global list for categories -->
+            <div class="benefit-card" data-aos="fade-up" data-aos-delay="400" style="margin-top: 40px; max-width: 1100px; margin-left: auto; margin-right: auto; padding-bottom: 20px;">
+                <div class="benefit-header">
+                    <i class="fas fa-rocket" style="font-size: 2.5rem; margin-bottom: 10px;"></i>
+                    <h3 style="font-size: 2rem;">BENEFICIOS DE BOOST | ACTUALIZADOS</h3>
+                </div>
+                
+                <div style="display: flex; flex-wrap: wrap; gap: 30px; padding: 30px; justify-content: space-around; text-align: left;">
+                    <!-- Vehiculos -->
+                    <div style="flex: 1; min-width: 250px;">
+                        <h4 style="color: var(--primary-color); font-size: 1.2rem; margin-bottom: 15px;"><i class="fas fa-car-side"></i> VEHÍCULOS</h4>
+                        <ul style="list-style: none; padding: 0; color: var(--text-color);">
+                            <li style="margin-bottom: 8px;">├─ 🕰️ Clásico</li>
+                            <li style="margin-bottom: 8px;">└─ 👑 Prestigio</li>
+                        </ul>
+                    </div>
+
+                    <!-- Armas -->
+                    <div style="flex: 1; min-width: 250px;">
+                        <h4 style="color: var(--primary-color); font-size: 1.2rem; margin-bottom: 15px;"><i class="fas fa-crosshairs"></i> ARMAS</h4>
+                        <ul style="list-style: none; padding: 0; color: var(--text-color);">
+                            <li style="margin-bottom: 8px;">├─ 🎯 Remington MSR</li>
+                            <li style="margin-bottom: 8px;">├─ ⚡ PPSH 41</li>
+                            <li style="margin-bottom: 8px;">├─ 🎯 Remington 700</li>
+                            <li style="margin-bottom: 8px;">├─ 🐍 Python de Colt</li>
+                            <li style="margin-bottom: 8px;">├─ 💥 M249</li>
+                            <li style="margin-bottom: 8px;">└─ 🎯 M14</li>
+                        </ul>
+                    </div>
+
+                    <!-- Bono Especial -->
+                    <div style="flex: 1; min-width: 250px;">
+                        <h4 style="color: var(--primary-color); font-size: 1.2rem; margin-bottom: 15px;"><i class="fas fa-gift"></i> BONO ESPECIAL</h4>
+                        <ul style="list-style: none; padding: 0; color: var(--text-color);">
+                            <li style="margin-bottom: 8px;">├─ 💵 30.000 de economía</li>
+                            <li style="margin-bottom: 8px;">└─ 🏢 Posibilidad de crear tu empresa propia, con liverys incluidas (cubiertas por el servidor)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Caja de Instrucciones (Tickets) -->
+            <div class="process-box" data-aos="fade-up" data-aos-delay="300">
+                <h3><i class="fab fa-discord"></i> ¿Ya mejoraste el servidor?</h3>
+                <p>Todos los beneficios por Boost se pueden reclamar abriendo un ticket en nuestro servidor oficial de
+                    Discord. Recuerda incluir las pruebas correspondientes (capturas de pantalla) para que el Staff
+                    pueda validar tu aporte y entregarte tus recompensas lo más rápido posible.</p>
+                <a href="https://discord.com/channels/1416140271032205435/1478866960967274642" class="discord-btn"
+                    target="_blank">
+                    <i class="fas fa-ticket-alt"></i> Abrir 🎫・ticket ahora
+                </a>
+            </div>
+
+            <!-- Próximamente -->
+            <div class="coming-soon" data-aos="fade-up" data-aos-delay="400">
+                <i class="fas fa-rocket"></i>
+                <h3>¡Próximamente más beneficios!</h3>
+                <p>Por el momento, estos son los beneficios exclusivos por Discord Boost. Estamos trabajando en nuevas
+                    cositas, paquetes VIP y artículos que podrás adquirir pronto para mejorar aún más tu experiencia en
+                    BajaRP. ¡Mantente atento a los anuncios!</p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h3>BajaRP</h3>
+                    <p>La mejor comunidad de roleplay. Vive tu segunda vida en BajaRP.</p>
+                </div>
+
+                <div class="footer-col">
+                    <h3>Enlaces Rápidos</h3>
+                    <ul>
+                        <li><a href="index.html">Inicio</a></li>
+                        <li><a href="normativas.html">Normativas</a></li>
+                        <li><a href="apelaciones.html">Apelaciones</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h3>Contacto</h3>
+                    <div class="social-links">
+                        <a href="https://discord.gg/UBy2a7NtAb"><i class="fab fa-discord"></i></a>
+                        <a href="https://www.tiktok.com/@paletorpoficial?is_from_webapp=1&sender_device=pc"><i
+                                class="fab fa-tiktok"></i></a>
+                        <a href="https://www.youtube.com/@paletorp"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2026 BajaRP. Todos los derechos reservados para Junior Renteria.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            AOS.init({
+                once: true,
+                offset: 50,
+            });
+        });
+    </script>
+</body>
+
+</html>
