@@ -346,5 +346,6 @@ if __name__ == '__main__':
         print(f"❌ Error conectando a la base de datos: {e}")
 
     # Arrancamos el servidor
-    print("\n🚀 Servidor web iniciado en: http://127.0.0.1:5000\n")
-    app.run(port=5000, debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    print(f"\n🚀 Servidor web iniciado en: http://0.0.0.0:{port}\n")
+    app.run(host="0.0.0.0", port=port, debug=False)
