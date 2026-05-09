@@ -32,7 +32,7 @@ class Sancionar(commands.Cog):
         cursor = conn.cursor()
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS sanciones (
-                id INTEGER PRIMARY KEY AUTO_INCREMENT,
+                id SERIAL PRIMARY KEY,
                 usuario_id BIGINT,
                 tipo VARCHAR(100),
                 razon TEXT,

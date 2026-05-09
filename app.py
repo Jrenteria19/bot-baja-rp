@@ -3,6 +3,7 @@ import requests
 from flask import Flask, redirect, request, session, send_from_directory
 from dotenv import load_dotenv
 from db_connect import get_db_connection
+from psycopg2.extras import RealDictCursor
 
 # =====================================================================
 # CONFIGURACIÓN INICIAL
@@ -192,7 +193,7 @@ def pending_whitelists():
         
     try:
         conn = get_db_connection()
-        cursor = conn.cursor(dictionary=True)
+        cursor = conn.cursor(cursor_factory=RealDictCursor)
         cursor.execute("SELECT id, discord_name, roblox_name, q1, q2, q3, q4, q5, created_at FROM whitelists WHERE status = 'Pendiente' ORDER BY created_at ASC")
         data = cursor.fetchall()
         cursor.close()
@@ -221,7 +222,7 @@ def resolve_whitelist():
         
     try:
         conn = get_db_connection()
-        cursor = conn.cursor(dictionary=True)
+        cursor = conn.cursor(cursor_factory=RealDictCursor)
         
         # Obtener datos antes de borrar
         cursor.execute("SELECT discord_id, roblox_name FROM whitelists WHERE id = %s", (whitelist_id,))
@@ -324,7 +325,7 @@ if __name__ == '__main__':
         cursor = conn.cursor()
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS whitelists (
-                id INT AUTO_INCREMENT PRIMARY KEY,
+                id SERIAL PRIMARY KEY,
                 discord_id VARCHAR(255) NOT NULL,
                 discord_name VARCHAR(255) NOT NULL,
                 roblox_name VARCHAR(255) NOT NULL,

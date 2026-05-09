@@ -20,7 +20,7 @@ class CalificacionesStaff(commands.Cog):
         cursor = conn.cursor()
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS calificaciones_staffs (
-                id INTEGER PRIMARY KEY AUTO_INCREMENT,
+                id SERIAL PRIMARY KEY,
                 usuario_id BIGINT,
                 staff_id BIGINT,
                 estrellas INTEGER,

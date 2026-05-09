@@ -39,7 +39,7 @@ class INE(commands.Cog):
         cursor = conn.cursor()
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS cedulas (
-                id INTEGER PRIMARY KEY AUTO_INCREMENT,
+                id SERIAL PRIMARY KEY,
                 discord_id BIGINT UNIQUE,
                 rob_user VARCHAR(255),
                 nombres VARCHAR(255),
