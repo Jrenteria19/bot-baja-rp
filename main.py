@@ -70,9 +70,9 @@ class ServidorBot(commands.Bot):
         """
         estados = [
             "🏙️ la comunidad",
-            "👑 Owners: Drack & Mariano",
             "🛠️ Bot desarrollado por: Smile",
-            "🌐 BajaRP"
+            "🌐 bot-baja-rp.onrender.com",
+            "🛡️ BajaRP"
         ]
         
         # Seleccionamos el mensaje según el tiempo (rotación infinita)
