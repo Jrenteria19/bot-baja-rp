@@ -76,7 +76,7 @@ def callback():
     
     r = requests.post("https://discord.com/api/oauth2/token", data=data, headers=headers)
     if r.status_code != 200:
-        return f"Error al intercambiar el token. Revisa tu Client Secret en .env", 400
+        return f"Error al intercambiar el token. Discord dice: {r.text}", 400
         
     token_response = r.json()
     access_token = token_response['access_token']
