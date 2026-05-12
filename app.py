@@ -25,7 +25,7 @@ DISCORD_BOT_TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 GUILD_ID = os.getenv('GUILD_ID')
 
 # URL de redirección (Asegúrate de que coincida con el portal de desarrolladores de Discord)
-REDIRECT_URI = 'http://127.0.0.1:5000/auth/discord/callback'
+REDIRECT_URI = os.getenv('DISCORD_REDIRECT_URI', 'https://bot-baja-rp.onrender.com/auth/discord/callback')
 
 # Construcción de la URL de Autorización (OAuth2)
 OAUTH2_URL = f"https://discord.com/api/oauth2/authorize?client_id={DISCORD_CLIENT_ID}&redirect_uri={REDIRECT_URI}&response_type=code&scope=identify"
