@@ -352,8 +352,7 @@
 
             <ul class="nav-links">
                 <li><a href="index.html"><i class="fas fa-home"></i> Inicio</a></li>
-                <li><a href="codigo_penal.html"><i class="fas fa-gavel"></i> C�digo Penal</a></li>
-                <li><a href="codigo_penal.html"><i class="fas fa-gavel"></i> Código Penal</a></li>
+                                                <li><a href="codigo_penal.html"><i class="fas fa-gavel"></i> Código Penal</a></li>
                 <li><a href="normativas.html"><i class="fas fa-book"></i> Normativas</a></li>
                 <li><a href="beneficios.html"><i class="fas fa-star"></i> Beneficios</a></li>
                 <li class="mobile-only"><a href="/auth/discord" class="nav-cta"><i class="fas fa-sign-in-alt"></i> Iniciar Sesión</a></li>
@@ -389,71 +388,146 @@
     <div class="dashboard-wrapper">
         
         <!-- Sidebar -->
-        <div class="sidebar" id="adminSidebar">
-            <h3>Administración</h3>
+        <!-- Sidebar -->
+        <div class="sidebar" id="dashboardSidebar" style="display: block;">
+            <h3>Menú Ciudadano</h3>
             <ul class="sidebar-menu">
                 <li>
-                    <a href="#" class="active" onclick="showPanel('whitelistPanel')">
-                        <i class="fas fa-clipboard-list"></i> Formularios (Whitelist)
+                    <a href="#" class="active" onclick="showPanel('resumenPanel', this)">
+                        <i class="fas fa-chart-pie"></i> Resumen
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="showPanel('economiaPanel', this)">
+                        <i class="fas fa-coins"></i> Economía
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="showPanel('registroCivilPanel', this)">
+                        <i class="fas fa-id-card"></i> Registro Civil
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="showPanel('sancionesPanel', this)">
+                        <i class="fas fa-gavel"></i> Sanciones
                     </a>
                 </li>
             </ul>
+
+            <div id="adminSection" style="display: none; margin-top: 20px;">
+                <h3 style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">Administración</h3>
+                <ul class="sidebar-menu">
+                    <li>
+                        <a href="#" onclick="showPanel('whitelistPanel', this)">
+                            <i class="fas fa-clipboard-list"></i> Formularios
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
 
         <!-- Main Content -->
         <div class="main-content">
-            <!-- Tarjeta de Bienvenida -->
-            <div class="welcome-card" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
-                <div style="display: flex; align-items: center; gap: 20px;">
-                    <img id="userAvatar" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Avatar" class="profile-pic">
-                    <div class="welcome-text">
-                        <h1>¡Bienvenido, <span id="userName">Ciudadano</span>!</h1>
-                        <p><i class="fas fa-briefcase"></i> Trabajo: <span style="color: var(--secondary-color);">Desempleado</span></p>
+            <!-- Panel Principal (Resumen) -->
+            <div id="resumenPanel" class="dashboard-panel" style="display: block;">
+                <!-- Tarjeta de Bienvenida -->
+                <div class="welcome-card" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+                    <div style="display: flex; align-items: center; gap: 20px;">
+                        <img id="userAvatar" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Avatar" class="profile-pic">
+                        <div class="welcome-text">
+                            <h1>¡Bienvenido, <span id="userName">Ciudadano</span>!</h1>
+                            <p><i class="fas fa-briefcase"></i> Trabajo: <span style="color: var(--secondary-color);">Desempleado</span></p>
+                        </div>
+                    </div>
+                    <a href="/logout" class="logout-card-btn" style="background-color: rgba(230, 0, 0, 0.1); border: 1px solid var(--primary-color); color: var(--text-light); text-decoration: none; padding: 10px 20px; border-radius: 8px; font-family: 'Poppins', sans-serif; transition: background-color 0.3s; font-weight: 500;">
+                        <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                    </a>
+                </div>
+
+                <!-- Panel de Estadísticas del Ciudadano -->
+                <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                    <div class="stat-card" style="background: var(--card-bg); padding: 20px; border-radius: 12px; border: 1px solid rgba(0, 68, 129, 0.3); border-left: 4px solid #004481; display: flex; flex-direction: column; gap: 10px;">
+                        <div style="display: flex; justify-content: space-between; color: #004481;">
+                            <h3 style="margin:0; font-size: 1.1rem;"><i class="fas fa-university"></i> Banco BBVA</h3>
+                        </div>
+                        <p style="font-size: 1.8rem; font-weight: 600; margin: 0; color: var(--text-light);" id="userSaldo">$0</p>
+                        <p style="font-size: 0.85rem; color: rgba(255,255,255,0.6); margin: 0;">Fondo disponible</p>
+                        <div style="margin-top: 10px;">
+                            <a href="#" onclick="showPanel('economiaPanel', document.querySelectorAll('.sidebar-menu a')[1])" style="color: #004481; text-decoration: none; font-size: 0.9rem; font-weight: 500;"><i class="fas fa-external-link-alt"></i> Gestionar Economía</a>
+                        </div>
+                    </div>
+
+                    <div class="stat-card" style="background: var(--card-bg); padding: 20px; border-radius: 12px; border: 1px solid rgba(0, 104, 71, 0.3); border-left: 4px solid #006847; display: flex; flex-direction: column; gap: 10px;">
+                        <div style="display: flex; justify-content: space-between; color: #006847;">
+                            <h3 style="margin:0; font-size: 1.1rem;"><i class="fas fa-id-card"></i> Registro Civil</h3>
+                        </div>
+                        <p style="font-size: 1.5rem; font-weight: 600; margin: 0; color: var(--text-light);" id="userIneStatus">No Registrado</p>
+                        <p style="font-size: 0.85rem; color: rgba(255,255,255,0.6); margin: 0;">Estatus del INE</p>
+                        <div style="margin-top: 10px;">
+                            <a href="#" onclick="showPanel('registroCivilPanel', document.querySelectorAll('.sidebar-menu a')[2])" style="color: #006847; text-decoration: none; font-size: 0.9rem; font-weight: 500;"><i class="fas fa-external-link-alt"></i> Tramitar INE</a>
+                        </div>
+                    </div>
+
+                    <div class="stat-card" style="background: var(--card-bg); padding: 20px; border-radius: 12px; border: 1px solid rgba(230, 0, 0, 0.3); border-left: 4px solid var(--primary-color); display: flex; flex-direction: column; gap: 10px;">
+                        <div style="display: flex; justify-content: space-between; color: var(--primary-color);">
+                            <h3 style="margin:0; font-size: 1.1rem;"><i class="fas fa-balance-scale"></i> Historial Penal</h3>
+                        </div>
+                        <p style="font-size: 1.8rem; font-weight: 600; margin: 0; color: var(--text-light);" id="userSanciones">0 Warns</p>
+                        <p style="font-size: 0.85rem; color: rgba(255,255,255,0.6); margin: 0;">Historial Administrativo</p>
+                        <div style="margin-top: 10px;">
+                            <a href="/normativas.html" style="color: var(--primary-color); text-decoration: none; font-size: 0.9rem; font-weight: 500;"><i class="fas fa-book"></i> Leer Normativas</a>
+                        </div>
                     </div>
                 </div>
-                <a href="/logout" class="logout-card-btn" style="background-color: rgba(230, 0, 0, 0.1); border: 1px solid var(--primary-color); color: var(--text-light); text-decoration: none; padding: 10px 20px; border-radius: 8px; font-family: 'Poppins', sans-serif; transition: background-color 0.3s; font-weight: 500;">
-                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
-                </a>
             </div>
 
-            <!-- Panel de Estadísticas del Ciudadano -->
-            <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px;">
-                <div class="stat-card" style="background: var(--card-bg); padding: 20px; border-radius: 12px; border: 1px solid rgba(0, 68, 129, 0.3); border-left: 4px solid #004481; display: flex; flex-direction: column; gap: 10px;">
-                    <div style="display: flex; justify-content: space-between; color: #004481;">
-                        <h3 style="margin:0; font-size: 1.1rem;"><i class="fas fa-university"></i> Banco BBVA</h3>
-                    </div>
-                    <p style="font-size: 1.8rem; font-weight: 600; margin: 0; color: var(--text-light);" id="userSaldo">$0</p>
-                    <p style="font-size: 0.85rem; color: rgba(255,255,255,0.6); margin: 0;">Fondo disponible</p>
-                    <div style="margin-top: 10px;">
-                        <a href="javascript:void(0)" onclick="alert('Usa el comando /estado-cuenta o /transferir en Discord para gestionar tus fondos.')" style="color: #004481; text-decoration: none; font-size: 0.9rem; font-weight: 500;"><i class="fas fa-external-link-alt"></i> Gestionar en Discord</a>
+            <!-- Panel de Economía -->
+            <div id="economiaPanel" class="dashboard-panel" style="display: none;">
+                <div class="admin-header">
+                    <h2><i class="fas fa-coins"></i> Gestión Económica</h2>
+                </div>
+                <div class="wl-list">
+                    <div class="empty-state" style="padding: 40px;">
+                        <i class="fas fa-university" style="font-size: 3rem; color: #004481; margin-bottom: 20px;"></i>
+                        <h3 style="font-size: 1.5rem; margin-bottom: 10px;">Banco Central BBVA</h3>
+                        <p>Próximamente podrás transferir fondos y cobrar sueldos directamente desde la web.</p>
+                        <p style="color: var(--secondary-color); font-size: 0.9rem; margin-top: 10px;">Por ahora, utiliza el canal <strong>#banco</strong> en Discord.</p>
                     </div>
                 </div>
+            </div>
 
-                <div class="stat-card" style="background: var(--card-bg); padding: 20px; border-radius: 12px; border: 1px solid rgba(0, 104, 71, 0.3); border-left: 4px solid #006847; display: flex; flex-direction: column; gap: 10px;">
-                    <div style="display: flex; justify-content: space-between; color: #006847;">
-                        <h3 style="margin:0; font-size: 1.1rem;"><i class="fas fa-id-card"></i> Registro Civil</h3>
-                    </div>
-                    <p style="font-size: 1.5rem; font-weight: 600; margin: 0; color: var(--text-light);" id="userIneStatus">No Registrado</p>
-                    <p style="font-size: 0.85rem; color: rgba(255,255,255,0.6); margin: 0;">Estatus del INE</p>
-                    <div style="margin-top: 10px;">
-                        <a href="javascript:void(0)" onclick="alert('Usa el comando /crear-ine en el canal de Registro Civil en Discord para tramitar tu documento.')" style="color: #006847; text-decoration: none; font-size: 0.9rem; font-weight: 500;"><i class="fas fa-external-link-alt"></i> Tramitar INE</a>
+            <!-- Panel de Registro Civil -->
+            <div id="registroCivilPanel" class="dashboard-panel" style="display: none;">
+                <div class="admin-header">
+                    <h2><i class="fas fa-id-card"></i> Registro Civil</h2>
+                </div>
+                <div class="wl-list">
+                    <div class="empty-state" style="padding: 40px;">
+                        <i class="fas fa-fingerprint" style="font-size: 3rem; color: #006847; margin-bottom: 20px;"></i>
+                        <h3 style="font-size: 1.5rem; margin-bottom: 10px;">Identidad Oficial</h3>
+                        <p>Próximamente podrás visualizar y renovar tu credencial para votar aquí.</p>
+                        <p style="color: var(--secondary-color); font-size: 0.9rem; margin-top: 10px;">Por ahora, utiliza el canal <strong>#registro-civil</strong> en Discord.</p>
                     </div>
                 </div>
+            </div>
 
-                <div class="stat-card" style="background: var(--card-bg); padding: 20px; border-radius: 12px; border: 1px solid rgba(230, 0, 0, 0.3); border-left: 4px solid var(--primary-color); display: flex; flex-direction: column; gap: 10px;">
-                    <div style="display: flex; justify-content: space-between; color: var(--primary-color);">
-                        <h3 style="margin:0; font-size: 1.1rem;"><i class="fas fa-balance-scale"></i> Historial Penal</h3>
-                    </div>
-                    <p style="font-size: 1.8rem; font-weight: 600; margin: 0; color: var(--text-light);" id="userSanciones">0 Warns</p>
-                    <p style="font-size: 0.85rem; color: rgba(255,255,255,0.6); margin: 0;">Sanciones Administrativas</p>
-                    <div style="margin-top: 10px;">
-                        <a href="/codigo_penal.html" style="color: var(--primary-color); text-decoration: none; font-size: 0.9rem; font-weight: 500;"><i class="fas fa-book"></i> Leer Código Penal</a>
+            <!-- Panel de Sanciones -->
+            <div id="sancionesPanel" class="dashboard-panel" style="display: none;">
+                <div class="admin-header">
+                    <h2><i class="fas fa-gavel"></i> Historial Penal</h2>
+                </div>
+                <div class="wl-list">
+                    <div class="empty-state" style="padding: 40px;">
+                        <i class="fas fa-balance-scale" style="font-size: 3rem; color: var(--primary-color); margin-bottom: 20px;"></i>
+                        <h3 style="font-size: 1.5rem; margin-bottom: 10px;">Expediente Judicial</h3>
+                        <p>Próximamente podrás ver el detalle de tus arrestos y multas.</p>
+                        <p style="color: var(--secondary-color); font-size: 0.9rem; margin-top: 10px;">Si consideras que fuiste sancionado por error, abre un ticket de apelación.</p>
                     </div>
                 </div>
             </div>
 
             <!-- Panel de Administración de Whitelist -->
-            <div class="admin-panel" id="whitelistPanel">
+            <div class="dashboard-panel" id="whitelistPanel" style="display: none;">
                 <div class="admin-header">
                     <h2><i class="fas fa-clipboard-list"></i> Solicitudes Pendientes</h2>
                     <button class="join-btn" onclick="loadWhitelists()"><i class="fas fa-sync-alt"></i> Refrescar</button>
@@ -662,6 +736,24 @@
             } catch (error) {
                 loading.style.display = "none";
                 alert("Ocurrió un error al procesar la solicitud.");
+            }
+        }
+
+        // Función para cambiar de panel en el Dashboard
+        function showPanel(panelId, element) {
+            // Ocultar todos los paneles
+            const panels = document.querySelectorAll('.dashboard-panel');
+            panels.forEach(p => p.style.display = 'none');
+            
+            // Mostrar el seleccionado
+            const activePanel = document.getElementById(panelId);
+            if(activePanel) activePanel.style.display = 'block';
+            
+            // Cambiar clase active en el menú si se proporciona el elemento
+            if(element) {
+                const links = document.querySelectorAll('.sidebar-menu a');
+                links.forEach(l => l.classList.remove('active'));
+                element.classList.add('active');
             }
         }
     </script>
