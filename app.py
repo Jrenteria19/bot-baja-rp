@@ -139,12 +139,47 @@ def user_info():
     if 'user_id' not in session:
         return {"error": "No has iniciado sesión"}, 401
     
+    user_id = session['user_id']
+    
+    # Extraer información adicional desde Supabase (PostgreSQL)
+    saldo = 0
+    sanciones_count = 0
+    has_ine = False
+    
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        # Obtener saldo bancario
+        cursor.execute('SELECT saldo FROM cuentas_bancarias WHERE id = %s', (user_id,))
+        row = cursor.fetchone()
+        if row:
+            saldo = row[0]
+            
+        # Obtener cantidad de sanciones
+        cursor.execute('SELECT COUNT(*) FROM sanciones WHERE usuario_id = %s', (user_id,))
+        row = cursor.fetchone()
+        if row:
+            sanciones_count = row[0]
+            
+        # Comprobar INE
+        cursor.execute('SELECT 1 FROM cedulas WHERE discord_id = %s', (user_id,))
+        if cursor.fetchone():
+            has_ine = True
+            
+        conn.close()
+    except Exception as e:
+        print(f"Error al obtener datos adicionales de {user_id}: {e}")
+    
     return {
-        "discord_id": session['user_id'],
+        "discord_id": user_id,
         "discord_name": session['username'],
         "avatar_url": session.get('avatar_url', 'https://cdn.discordapp.com/embed/avatars/0.png'),
         "is_admin": session.get('is_admin', False),
-        "is_verified": session.get('verified', False)
+        "is_verified": session.get('verified', False),
+        "saldo": saldo,
+        "sanciones": sanciones_count,
+        "tiene_ine": has_ine
     }
 
 @app.route('/submit_whitelist', methods=['POST'])

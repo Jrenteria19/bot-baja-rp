@@ -408,12 +408,48 @@
                     <img id="userAvatar" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Avatar" class="profile-pic">
                     <div class="welcome-text">
                         <h1>¡Bienvenido, <span id="userName">Ciudadano</span>!</h1>
-                        <p><i class="fas fa-briefcase"></i> Trabajo: <span style="color: var(--secondary-color);">Default</span></p>
+                        <p><i class="fas fa-briefcase"></i> Trabajo: <span style="color: var(--secondary-color);">Desempleado</span></p>
                     </div>
                 </div>
                 <a href="/logout" class="logout-card-btn" style="background-color: rgba(230, 0, 0, 0.1); border: 1px solid var(--primary-color); color: var(--text-light); text-decoration: none; padding: 10px 20px; border-radius: 8px; font-family: 'Poppins', sans-serif; transition: background-color 0.3s; font-weight: 500;">
                     <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
                 </a>
+            </div>
+
+            <!-- Panel de Estadísticas del Ciudadano -->
+            <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                <div class="stat-card" style="background: var(--card-bg); padding: 20px; border-radius: 12px; border: 1px solid rgba(0, 68, 129, 0.3); border-left: 4px solid #004481; display: flex; flex-direction: column; gap: 10px;">
+                    <div style="display: flex; justify-content: space-between; color: #004481;">
+                        <h3 style="margin:0; font-size: 1.1rem;"><i class="fas fa-university"></i> Banco BBVA</h3>
+                    </div>
+                    <p style="font-size: 1.8rem; font-weight: 600; margin: 0; color: var(--text-light);" id="userSaldo">$0</p>
+                    <p style="font-size: 0.85rem; color: rgba(255,255,255,0.6); margin: 0;">Fondo disponible</p>
+                    <div style="margin-top: 10px;">
+                        <a href="javascript:void(0)" onclick="alert('Usa el comando /estado-cuenta o /transferir en Discord para gestionar tus fondos.')" style="color: #004481; text-decoration: none; font-size: 0.9rem; font-weight: 500;"><i class="fas fa-external-link-alt"></i> Gestionar en Discord</a>
+                    </div>
+                </div>
+
+                <div class="stat-card" style="background: var(--card-bg); padding: 20px; border-radius: 12px; border: 1px solid rgba(0, 104, 71, 0.3); border-left: 4px solid #006847; display: flex; flex-direction: column; gap: 10px;">
+                    <div style="display: flex; justify-content: space-between; color: #006847;">
+                        <h3 style="margin:0; font-size: 1.1rem;"><i class="fas fa-id-card"></i> Registro Civil</h3>
+                    </div>
+                    <p style="font-size: 1.5rem; font-weight: 600; margin: 0; color: var(--text-light);" id="userIneStatus">No Registrado</p>
+                    <p style="font-size: 0.85rem; color: rgba(255,255,255,0.6); margin: 0;">Estatus del INE</p>
+                    <div style="margin-top: 10px;">
+                        <a href="javascript:void(0)" onclick="alert('Usa el comando /crear-ine en el canal de Registro Civil en Discord para tramitar tu documento.')" style="color: #006847; text-decoration: none; font-size: 0.9rem; font-weight: 500;"><i class="fas fa-external-link-alt"></i> Tramitar INE</a>
+                    </div>
+                </div>
+
+                <div class="stat-card" style="background: var(--card-bg); padding: 20px; border-radius: 12px; border: 1px solid rgba(230, 0, 0, 0.3); border-left: 4px solid var(--primary-color); display: flex; flex-direction: column; gap: 10px;">
+                    <div style="display: flex; justify-content: space-between; color: var(--primary-color);">
+                        <h3 style="margin:0; font-size: 1.1rem;"><i class="fas fa-balance-scale"></i> Historial Penal</h3>
+                    </div>
+                    <p style="font-size: 1.8rem; font-weight: 600; margin: 0; color: var(--text-light);" id="userSanciones">0 Warns</p>
+                    <p style="font-size: 0.85rem; color: rgba(255,255,255,0.6); margin: 0;">Sanciones Administrativas</p>
+                    <div style="margin-top: 10px;">
+                        <a href="/codigo_penal.html" style="color: var(--primary-color); text-decoration: none; font-size: 0.9rem; font-weight: 500;"><i class="fas fa-book"></i> Leer Código Penal</a>
+                    </div>
+                </div>
             </div>
 
             <!-- Panel de Administración de Whitelist -->
@@ -461,6 +497,21 @@
 
                 userNameSpan.textContent = data.discord_name;
                 userAvatar.src = data.avatar_url;
+                
+                // Llenar estadísticas del jugador
+                document.getElementById("userSaldo").textContent = "$" + (data.saldo || 0).toLocaleString() + " MXN";
+                if (data.tiene_ine) {
+                    document.getElementById("userIneStatus").textContent = "Identificación Activa";
+                    document.getElementById("userIneStatus").style.color = "var(--success-color)";
+                } else {
+                    document.getElementById("userIneStatus").textContent = "Indocumentado";
+                    document.getElementById("userIneStatus").style.color = "var(--danger-color)";
+                }
+                
+                document.getElementById("userSanciones").textContent = (data.sanciones || 0) + " Warns";
+                if (data.sanciones > 0) {
+                    document.getElementById("userSanciones").style.color = "var(--danger-color)";
+                }
                 
                 // Mostrar panel de administración si tiene el rol
                 if (data.is_admin) {
