@@ -401,12 +401,17 @@
         <!-- Main Content -->
         <div class="main-content">
             <!-- Tarjeta de Bienvenida -->
-            <div class="welcome-card">
-                <img id="userAvatar" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Avatar" class="profile-pic">
-                <div class="welcome-text">
-                    <h1>¡Bienvenido, <span id="userName">Ciudadano</span>!</h1>
-                    <p><i class="fas fa-briefcase"></i> Trabajo: <span style="color: var(--secondary-color);">Default</span></p>
+            <div class="welcome-card" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+                <div style="display: flex; align-items: center; gap: 20px;">
+                    <img id="userAvatar" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Avatar" class="profile-pic">
+                    <div class="welcome-text">
+                        <h1>¡Bienvenido, <span id="userName">Ciudadano</span>!</h1>
+                        <p><i class="fas fa-briefcase"></i> Trabajo: <span style="color: var(--secondary-color);">Default</span></p>
+                    </div>
                 </div>
+                <a href="/logout" class="nav-cta" style="background-color: rgba(230, 0, 0, 0.1); border: 1px solid var(--primary-color); color: var(--text-light); text-decoration: none; padding: 10px 20px; border-radius: 8px; font-family: 'Poppins', sans-serif; transition: background-color 0.3s; font-weight: 500;">
+                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                </a>
             </div>
 
             <!-- Panel de Administración de Whitelist -->

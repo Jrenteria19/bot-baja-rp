@@ -45,6 +45,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     btn.style.alignItems = "center";
                     btn.style.background = "rgba(255, 255, 255, 0.1)";
                     btn.style.border = "1px solid rgba(255, 255, 255, 0.2)";
+                    
+                    // Añadir botón global de cerrar sesión a la derecha del perfil
+                    if (!btn.nextElementSibling || !btn.nextElementSibling.classList.contains('logout-btn')) {
+                        const logoutBtn = document.createElement('a');
+                        logoutBtn.href = "/logout";
+                        logoutBtn.className = "logout-btn";
+                        logoutBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i>';
+                        logoutBtn.title = "Cerrar Sesión";
+                        logoutBtn.style.cssText = "margin-left: 10px; color: var(--primary-color); border: 1px solid var(--primary-color); padding: 8px 12px; border-radius: 8px; transition: 0.3s; text-decoration: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;";
+                        logoutBtn.onmouseover = function() { this.style.background = "rgba(230,0,0,0.2)"; };
+                        logoutBtn.onmouseout = function() { this.style.background = "transparent"; };
+                        btn.parentNode.insertBefore(logoutBtn, btn.nextSibling);
+                    }
                 });
             }
         })

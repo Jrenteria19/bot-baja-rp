@@ -128,6 +128,11 @@ def callback():
     else:
         return "No tienes el rol de Ciudadano ni el de No Ciudadano asignado en Discord. Contacta a un administrador.", 403
 
+@app.route('/logout')
+def logout():
+    """Cierra la sesión del usuario y redirige al inicio."""
+    session.clear()
+    return redirect('/')
 @app.route('/api/user_info')
 def user_info():
     """Devuelve la información de la sesión actual para usarla en el Frontend."""
