@@ -355,6 +355,136 @@ def resolve_whitelist():
         print(f"Error en resolve_whitelist: {e}")
         return {"error": "Error interno del servidor al procesar la solicitud"}, 500
 
+@app.route('/api/economy', methods=['POST'])
+def handle_economy():
+    """Maneja las acciones económicas del dashboard: transferir, cobrar, agregar, quitar."""
+    if 'user_id' not in session:
+        return {"error": "No has iniciado sesión."}, 401
+        
+    data = request.json
+    action = data.get('action')
+    user_id = int(session['user_id'])
+    
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    def get_saldo(uid):
+        cursor.execute('SELECT saldo FROM cuentas_bancarias WHERE id = %s', (uid,))
+        res = cursor.fetchone()
+        if not res:
+            cursor.execute('INSERT INTO cuentas_bancarias (id, saldo) VALUES (%s, 0)', (uid,))
+            conn.commit()
+            return 0
+        return res[0]
+        
+    try:
+        if action == 'transferir':
+            target_id = int(data.get('target_id', 0))
+            amount = int(data.get('amount', 0))
+            concept = data.get('concept', 'Sin concepto')
+            
+            if amount < 10 or amount > 2000000:
+                return {"error": "La transferencia debe ser entre $10 y $2,000,000 MXN."}, 400
+                
+            if target_id == user_id:
+                return {"error": "No puedes transferirte a ti mismo."}, 400
+                
+            saldo_actual = get_saldo(user_id)
+            if saldo_actual < amount:
+                return {"error": "Fondos insuficientes."}, 400
+                
+            saldo_target = get_saldo(target_id)
+            if saldo_target + amount > 50000000:
+                return {"error": "El destinatario ha alcanzado el límite patrimonial máximo (50 Millones)."}, 400
+                
+            cursor.execute('UPDATE cuentas_bancarias SET saldo = saldo - %s WHERE id = %s', (amount, user_id))
+            cursor.execute('UPDATE cuentas_bancarias SET saldo = saldo + %s WHERE id = %s', (amount, target_id))
+            conn.commit()
+            
+            # Notificación a Discord Log
+            headers = {"Authorization": f"Bot {DISCORD_BOT_TOKEN}", "Content-Type": "application/json"}
+            log_embed = {
+                "title": "📝 Registro Financiero | Transferencia Web",
+                "description": f"**Remitente:** <@{user_id}>\n**Destinatario:** <@{target_id}>\n**Monto transferido:** `${amount:,.0f} MXN`\n**Concepto:** {concept}",
+                "color": 3447003
+            }
+            requests.post("https://discord.com/api/channels/1501013259271274543/messages", headers=headers, json={"embeds": [log_embed]})
+            
+            # DM al destinatario
+            dm_req = requests.post("https://discord.com/api/users/@me/channels", headers=headers, json={"recipient_id": target_id})
+            if dm_req.status_code == 200:
+                ch_id = dm_req.json().get('id')
+                dm_embed = {
+                    "title": "💰 TRANSFERENCIA RECIBIDA",
+                    "description": f"Has recibido una transferencia bancaria (Vía Web).\n\n**Remitente:** <@{user_id}>\n**Monto:** `${amount:,.0f} MXN`\n**Concepto:** {concept}",
+                    "color": 3066993
+                }
+                requests.post(f"https://discord.com/api/channels/{ch_id}/messages", headers=headers, json={"embeds": [dm_embed]})
+                
+            return {"message": "Transferencia realizada con éxito."}
+
+        elif action in ['agregar', 'quitar']:
+            if not session.get('is_admin'):
+                return {"error": "Acceso denegado. Se requiere Alta Administración Financiera."}, 403
+                
+            target_id = int(data.get('target_id', 0))
+            amount = int(data.get('amount', 0))
+            concept = data.get('concept', 'Sin concepto')
+            
+            if amount <= 0:
+                return {"error": "La cantidad debe ser mayor a 0."}, 400
+                
+            saldo_target = get_saldo(target_id)
+            
+            if action == 'agregar':
+                if saldo_target + amount > 50000000:
+                    return {"error": "Límite patrimonial excedido. (Tope 50 Millones)"}, 400
+                cursor.execute('UPDATE cuentas_bancarias SET saldo = saldo + %s WHERE id = %s', (amount, target_id))
+            else:
+                if saldo_target < amount:
+                    amount = saldo_target # Solo quitamos lo que tiene
+                    cursor.execute('UPDATE cuentas_bancarias SET saldo = 0 WHERE id = %s', (target_id,))
+                else:
+                    cursor.execute('UPDATE cuentas_bancarias SET saldo = saldo - %s WHERE id = %s', (amount, target_id))
+            
+            conn.commit()
+            
+            headers = {"Authorization": f"Bot {DISCORD_BOT_TOKEN}", "Content-Type": "application/json"}
+            color = 3066993 if action == 'agregar' else 15158332
+            title = "Depósito Administrativo Web" if action == 'agregar' else "Embargo Web"
+            
+            log_embed = {
+                "title": f"📝 Registro Financiero | {title}",
+                "description": f"**Oficial a cargo:** <@{user_id}>\n**Cuenta afectada:** <@{target_id}>\n**Monto:** `${amount:,.0f} MXN`\n**Comprobante:** {concept}",
+                "color": color
+            }
+            requests.post("https://discord.com/api/channels/1501013259271274543/messages", headers=headers, json={"embeds": [log_embed]})
+            
+            dm_req = requests.post("https://discord.com/api/users/@me/channels", headers=headers, json={"recipient_id": target_id})
+            if dm_req.status_code == 200:
+                ch_id = dm_req.json().get('id')
+                dm_title = "💰 DEPÓSITO BANCARIO APROBADO" if action == 'agregar' else "📉 EMBARGO BANCARIO EJECUTADO"
+                dm_embed = {
+                    "title": dm_title,
+                    "description": f"La Secretaría de Hacienda ha realizado un movimiento en tu cuenta (Vía Web).\n\n**Monto:** `${amount:,.0f} MXN`\n**Concepto:** {concept}",
+                    "color": color
+                }
+                requests.post(f"https://discord.com/api/channels/{ch_id}/messages", headers=headers, json={"embeds": [dm_embed]})
+                
+            return {"message": f"Transacción de {action} completada por ${amount} MXN."}
+
+        elif action == 'cobrar':
+            return {"error": "El sistema automático de cobro de sueldos está en mantenimiento en la web. Por favor, utiliza el comando /cobrar-sueldo en el canal #banco de Discord."}, 400
+
+    except ValueError:
+        return {"error": "Los campos de ID o cantidad deben ser numéricos."}, 400
+    except Exception as e:
+        print(f"Error en economy: {e}")
+        return {"error": "Error interno al procesar la transacción."}, 500
+    finally:
+        cursor.close()
+        conn.close()
+
 # =====================================================================
 # INICIALIZACIÓN DEL SERVIDOR WEB
 # =====================================================================

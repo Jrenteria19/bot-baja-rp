@@ -370,6 +370,25 @@
             .modal-footer { flex-direction: column; }
             .btn-accept, .btn-deny { width: 100%; }
         }
+
+        .eco-input {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--text-light);
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .eco-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 10px rgba(230, 0, 0, 0.2);
+        }
     </style>
 </head>
 
@@ -521,14 +540,59 @@
             <!-- Panel de Economía -->
             <div id="economiaPanel" class="dashboard-panel" style="display: none;">
                 <div class="admin-header">
-                    <h2><i class="fas fa-coins"></i> Gestión Económica</h2>
+                    <h2><i class="fas fa-coins"></i> Gestión Económica (BBVA)</h2>
                 </div>
-                <div class="wl-list">
-                    <div class="empty-state" style="padding: 40px;">
-                        <i class="fas fa-university" style="font-size: 3rem; color: #004481; margin-bottom: 20px;"></i>
-                        <h3 style="font-size: 1.5rem; margin-bottom: 10px;">Banco Central BBVA</h3>
-                        <p>Próximamente podrás transferir fondos y cobrar sueldos directamente desde la web.</p>
-                        <p style="color: var(--secondary-color); font-size: 0.9rem; margin-top: 10px;">Por ahora, utiliza el canal <strong>#banco</strong> en Discord.</p>
+                
+                <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px;">
+                    <!-- Transferir Fondos -->
+                    <div class="stat-card" style="background: var(--card-bg); padding: 25px; border-radius: 12px; border: 1px solid rgba(0, 68, 129, 0.3); border-top: 4px solid #004481;">
+                        <h3 style="color: #004481; font-size: 1.3rem; margin-bottom: 15px;"><i class="fas fa-exchange-alt"></i> Transferir Fondos</h3>
+                        <p style="font-size: 0.9rem; color: rgba(255,255,255,0.7); margin-bottom: 15px;">Transfiere dinero a otro ciudadano usando su ID de Discord.</p>
+                        <form id="transferForm" onsubmit="handleEconomy(event, 'transferir')">
+                            <input type="text" id="transf_target" placeholder="ID de Discord del destinatario" required class="eco-input">
+                            <input type="number" id="transf_amount" placeholder="Cantidad ($)" min="10" required class="eco-input">
+                            <input type="text" id="transf_concept" placeholder="Concepto / Motivo" required class="eco-input">
+                            <button type="submit" class="submit-btn" style="padding: 10px; font-size: 1rem;"><i class="fas fa-paper-plane"></i> Enviar</button>
+                        </form>
+                    </div>
+
+                    <!-- Cobrar Sueldo -->
+                    <div class="stat-card" style="background: var(--card-bg); padding: 25px; border-radius: 12px; border: 1px solid rgba(46, 204, 113, 0.3); border-top: 4px solid var(--success-color);">
+                        <h3 style="color: var(--success-color); font-size: 1.3rem; margin-bottom: 15px;"><i class="fas fa-money-check-alt"></i> Cobrar Sueldo</h3>
+                        <p style="font-size: 0.9rem; color: rgba(255,255,255,0.7); margin-bottom: 15px;">Recibe tu paga correspondiente según tu trabajo. Se aplica un periodo de espera (cooldown) según el cargo.</p>
+                        <button onclick="handleEconomy(event, 'cobrar')" class="submit-btn" style="background: var(--success-color); width: 100%; padding: 15px; font-size: 1.2rem;"><i class="fas fa-hand-holding-usd"></i> Reclamar Sueldo</button>
+                    </div>
+                </div>
+
+                <!-- Admin: Economía -->
+                <div id="adminEcoSection" style="display: none; margin-top: 40px;">
+                    <div class="admin-header">
+                        <h2 style="color: var(--danger-color);"><i class="fas fa-user-shield"></i> Alta Administración Financiera</h2>
+                    </div>
+                    <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px;">
+                        
+                        <!-- Agregar Fondos -->
+                        <div class="stat-card" style="background: var(--darker-bg); padding: 25px; border-radius: 12px; border: 1px solid rgba(46, 204, 113, 0.5); border-left: 4px solid var(--success-color);">
+                            <h3 style="color: var(--success-color); font-size: 1.2rem; margin-bottom: 15px;"><i class="fas fa-plus-circle"></i> Inyectar Capital</h3>
+                            <form id="addFundsForm" onsubmit="handleEconomy(event, 'agregar')">
+                                <input type="text" id="add_target" placeholder="ID de Discord" required class="eco-input">
+                                <input type="number" id="add_amount" placeholder="Cantidad ($)" min="1" required class="eco-input">
+                                <input type="text" id="add_concept" placeholder="Razón del depósito" required class="eco-input">
+                                <button type="submit" class="submit-btn" style="padding: 10px; font-size: 1rem; background: var(--success-color);">Depositar</button>
+                            </form>
+                        </div>
+
+                        <!-- Quitar Fondos -->
+                        <div class="stat-card" style="background: var(--darker-bg); padding: 25px; border-radius: 12px; border: 1px solid rgba(231, 76, 60, 0.5); border-left: 4px solid var(--danger-color);">
+                            <h3 style="color: var(--danger-color); font-size: 1.2rem; margin-bottom: 15px;"><i class="fas fa-minus-circle"></i> Embargar / Multar</h3>
+                            <form id="removeFundsForm" onsubmit="handleEconomy(event, 'quitar')">
+                                <input type="text" id="remove_target" placeholder="ID de Discord" required class="eco-input">
+                                <input type="number" id="remove_amount" placeholder="Cantidad ($)" min="1" required class="eco-input">
+                                <input type="text" id="remove_concept" placeholder="Razón del embargo" required class="eco-input">
+                                <button type="submit" class="submit-btn" style="padding: 10px; font-size: 1rem; background: var(--danger-color);">Retirar</button>
+                            </form>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -626,6 +690,9 @@
                 if (data.is_admin) {
                     const adminSection = document.getElementById("adminSection");
                     if (adminSection) adminSection.style.display = "block";
+                    
+                    const adminEcoSection = document.getElementById("adminEcoSection");
+                    if (adminEcoSection) adminEcoSection.style.display = "block";
                     
                     // Mostrar panel de whitelist por defecto para los admins
                     const adminLink = document.querySelector('#adminSection a');
@@ -794,6 +861,65 @@
                 const links = document.querySelectorAll('.sidebar-menu a');
                 links.forEach(l => l.classList.remove('active'));
                 element.classList.add('active');
+            }
+        }
+
+        // Función para manejar transacciones económicas
+        async function handleEconomy(event, action) {
+            if(event) event.preventDefault();
+            
+            let payload = { action };
+            let endpoint = '/api/economy';
+            
+            if (action === 'transferir') {
+                payload.target_id = document.getElementById('transf_target').value;
+                payload.amount = parseInt(document.getElementById('transf_amount').value);
+                payload.concept = document.getElementById('transf_concept').value;
+                
+                if(!confirm(`¿Estás seguro de transferir $${payload.amount} a ${payload.target_id}?`)) return;
+            } 
+            else if (action === 'cobrar') {
+                // No payload needed
+            } 
+            else if (action === 'agregar') {
+                payload.target_id = document.getElementById('add_target').value;
+                payload.amount = parseInt(document.getElementById('add_amount').value);
+                payload.concept = document.getElementById('add_concept').value;
+            } 
+            else if (action === 'quitar') {
+                payload.target_id = document.getElementById('remove_target').value;
+                payload.amount = parseInt(document.getElementById('remove_amount').value);
+                payload.concept = document.getElementById('remove_concept').value;
+            }
+
+            const loading = document.getElementById("loadingOverlay");
+            loading.style.display = "flex";
+
+            try {
+                const res = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await res.json();
+                loading.style.display = "none";
+
+                if (res.ok) {
+                    alert("✅ Éxito: " + data.message);
+                    if(action !== 'cobrar') {
+                        if(event && event.target) event.target.reset();
+                    }
+                    // Refrescar página para ver nuevo saldo si fue transferencia
+                    if(action === 'transferir' || action === 'cobrar') {
+                        window.location.reload();
+                    }
+                } else {
+                    alert("❌ Error: " + data.error);
+                }
+            } catch (error) {
+                loading.style.display = "none";
+                alert("❌ Ocurrió un error de conexión al procesar la solicitud.");
             }
         }
     </script>
