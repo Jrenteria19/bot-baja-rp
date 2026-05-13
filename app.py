@@ -628,6 +628,196 @@ def handle_cedula():
         cursor.close()
         conn.close()
 
+@app.route('/api/sanciones', methods=['POST'])
+def handle_sanciones():
+    """Maneja las sanciones: ver propias, ver de otros, crear y eliminar."""
+    if 'user_id' not in session:
+        return {"error": "No has iniciado sesión."}, 401
+        
+    data = request.json
+    action = data.get('action')
+    user_id = int(session['user_id'])
+    
+    conn = get_db_connection()
+    cursor = conn.cursor(cursor_factory=RealDictCursor) if hasattr(conn, 'cursor_factory') else conn.cursor(cursor_factory=RealDictCursor)
+    
+    try:
+        if action == 'ver_propia' or action == 'ver_otra':
+            target_id = user_id if action == 'ver_propia' else int(data.get('target_id', 0))
+            
+            cursor.execute('SELECT tipo, razon, prueba FROM sanciones WHERE usuario_id = %s', (target_id,))
+            sanciones = cursor.fetchall()
+            
+            # Formatear
+            sanc_list = []
+            for s in sanciones:
+                sanc_list.append({
+                    "tipo": s['tipo'].replace('_', ' '),
+                    "razon": s['razon'],
+                    "prueba": s['prueba']
+                })
+                
+            return {"sanciones": sanc_list}
+
+        elif action in ['crear', 'eliminar']:
+            if not session.get('is_admin'):
+                return {"error": "Acceso denegado. Se requieren permisos de Administración."}, 403
+                
+            target_id = int(data.get('target_id', 0))
+            tipo = data.get('tipo')
+            
+            if action == 'eliminar':
+                cursor.execute('DELETE FROM sanciones WHERE usuario_id = %s AND tipo = %s', (target_id, tipo))
+                if cursor.rowcount == 0:
+                    return {"error": "El usuario no tiene ese castigo específico."}, 404
+                conn.commit()
+                
+                # Opcional: Logs de discord
+                return {"message": "Sanción/Advertencia retirada exitosamente."}
+                
+            elif action == 'crear':
+                razon = data.get('razon')
+                prueba = data.get('prueba')
+                
+                if not all([target_id, tipo, razon, prueba]):
+                    return {"error": "Todos los campos son obligatorios."}, 400
+                    
+                cursor.execute('SELECT 1 FROM sanciones WHERE usuario_id = %s AND tipo = %s', (target_id, tipo))
+                if cursor.fetchone():
+                    return {"error": "El usuario ya tiene ese castigo específico (cada tipo es único)."}, 400
+                    
+                cursor.execute('INSERT INTO sanciones (usuario_id, tipo, razon, prueba) VALUES (%s, %s, %s, %s)', (target_id, tipo, razon, prueba))
+                conn.commit()
+                
+                headers = {"Authorization": f"Bot {DISCORD_BOT_TOKEN}", "Content-Type": "application/json"}
+                
+                # Enviar DM al sancionado
+                dm_req = requests.post("https://discord.com/api/users/@me/channels", headers=headers, json={"recipient_id": target_id})
+                if dm_req.status_code == 200:
+                    ch_id = dm_req.json().get('id')
+                    dm_embed = {
+                        "title": "⚠️ NUEVA SANCIÓN REGISTRADA",
+                        "description": f"Se ha añadido un nuevo castigo a tu expediente (Vía Web).\n\n**Tipo:** {tipo}\n**Motivo:** {razon}\n**Evidencia:** [Ver]({prueba})",
+                        "color": 16711680 if 'sancion' in tipo else 16753920
+                    }
+                    requests.post(f"https://discord.com/api/channels/{ch_id}/messages", headers=headers, json={"embeds": [dm_embed]})
+                    
+                # Log en el canal oficial
+                log_embed = {
+                    "title": "📝 Registro de Sistema - Nueva Sanción Web",
+                    "description": f"**Moderador:** <@{user_id}>\n**Usuario Sancionado:** <@{target_id}>\n**Tipo Asignado:** {tipo}\n**Razón:** {razon}\n**Evidencia:** {prueba}",
+                    "color": 16776960
+                }
+                requests.post("https://discord.com/api/channels/1501012505785532549/messages", headers=headers, json={"embeds": [log_embed]})
+                
+                return {"message": "Sanción/Advertencia aplicada exitosamente."}
+
+    except Exception as e:
+        print(f"Error en sanciones API: {e}")
+        return {"error": "Error interno al procesar la solicitud."}, 500
+    finally:
+        cursor.close()
+        conn.close()
+
+@app.route('/api/calificaciones', methods=['POST'])
+def handle_calificaciones():
+    """Maneja las calificaciones de staff: consultar semana, calificar, ver un staff"""
+    if 'user_id' not in session:
+        return {"error": "No has iniciado sesión."}, 401
+        
+    data = request.json
+    action = data.get('action')
+    user_id = int(session['user_id'])
+    
+    conn = get_db_connection()
+    cursor = conn.cursor(cursor_factory=RealDictCursor) if hasattr(conn, 'cursor_factory') else conn.cursor(cursor_factory=RealDictCursor)
+    
+    try:
+        if action == 'semana':
+            cursor.execute('''
+                SELECT staff_id, AVG(estrellas) as promedio, COUNT(estrellas) as total 
+                FROM calificaciones_staffs 
+                GROUP BY staff_id 
+                ORDER BY promedio DESC, total DESC 
+                LIMIT 1
+            ''')
+            top = cursor.fetchone()
+            if top:
+                return {"staff_semana": {"id": str(top['staff_id']), "promedio": round(top['promedio'], 1), "total": top['total']}}
+            return {"staff_semana": None}
+            
+        elif action == 'consultar':
+            target_id = int(data.get('target_id', 0))
+            cursor.execute('SELECT estrellas, mensaje FROM calificaciones_staffs WHERE staff_id = %s ORDER BY id DESC', (target_id,))
+            resenas = cursor.fetchall()
+            
+            if not resenas:
+                return {"stats": {"promedio": 0, "total": 0, "resenas": []}}
+                
+            promedio = sum(r['estrellas'] for r in resenas) / len(resenas)
+            
+            # Formatear las últimas 5
+            lista_resenas = []
+            for r in resenas[:5]:
+                lista_resenas.append({"estrellas": r['estrellas'], "mensaje": r['mensaje']})
+                
+            return {"stats": {"promedio": round(promedio, 1), "total": len(resenas), "resenas": lista_resenas}}
+            
+        elif action == 'calificar':
+            target_id = int(data.get('target_id', 0))
+            estrellas = int(data.get('estrellas', 0))
+            mensaje = data.get('mensaje', '').strip()
+            
+            if user_id == target_id:
+                return {"error": "No puedes autocalificarte a ti mismo."}, 400
+                
+            if estrellas < 1 or estrellas > 5:
+                return {"error": "La puntuación debe ser entre 1 y 5 estrellas."}, 400
+                
+            if not mensaje:
+                return {"error": "Debes proporcionar un mensaje de retroalimentación."}, 400
+                
+            cursor.execute('INSERT INTO calificaciones_staffs (usuario_id, staff_id, estrellas, mensaje) VALUES (%s, %s, %s, %s)', 
+                          (user_id, target_id, estrellas, mensaje))
+            conn.commit()
+            
+            # Enviar mensaje a Discord canal de calificaciones
+            headers = {"Authorization": f"Bot {DISCORD_BOT_TOKEN}", "Content-Type": "application/json"}
+            embed_publico = {
+                "title": "✨ ¡NUEVA VALORACIÓN DE STAFF RECIBIDA (Web)!",
+                "description": f"La comunidad acaba de evaluar la atención de un Staff.\n\n*ℹ️ Recuerda: Cada semana las calificaciones se borrarán automáticamente.*\n",
+                "color": 15844367,
+                "fields": [
+                    {"name": "🙎‍♂️ Calificado por:", "value": f"<@{user_id}>", "inline": True},
+                    {"name": "🛡️ Staff Evaluado:", "value": f"<@{target_id}>", "inline": True},
+                    {"name": "🎖️ Puntuación:", "value": "⭐" * estrellas, "inline": False},
+                    {"name": "📝 Mensaje:", "value": f"```\n{mensaje}\n```", "inline": False}
+                ]
+            }
+            requests.post("https://discord.com/api/channels/1481747743230656570/messages", headers=headers, json={"embeds": [embed_publico]})
+            
+            # Mandar log a admins
+            embed_log = {
+                "title": "📝 Registro de Sistema - Valoración Web",
+                "color": 3447003,
+                "fields": [
+                    {"name": "Usuario", "value": f"<@{user_id}>", "inline": True},
+                    {"name": "Staff", "value": f"<@{target_id}>", "inline": True},
+                    {"name": "Puntaje Real", "value": f"{estrellas}/5", "inline": True},
+                    {"name": "Mensaje", "value": f"```\n{mensaje}\n```", "inline": False}
+                ]
+            }
+            requests.post("https://discord.com/api/channels/1501007004171239464/messages", headers=headers, json={"embeds": [embed_log]})
+            
+            return {"message": "Reseña enviada correctamente. ¡Gracias por tu opinión!"}
+
+    except Exception as e:
+        print(f"Error en calificaciones API: {e}")
+        return {"error": "Error interno al procesar la solicitud."}, 500
+    finally:
+        cursor.close()
+        conn.close()
+
 # =====================================================================
 # INICIALIZACIÓN DEL SERVIDOR WEB
 # =====================================================================
