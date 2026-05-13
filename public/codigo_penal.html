@@ -7,7 +7,7 @@
     <meta name="description"
         content="Normativas Oficiales - BajaRP Comunidad de rol serio en Emergency Response: Liberty County.">
     <meta name="keywords" content="Roblox, ER:LC, Roleplay, BajaRP, Reglas, Normativas">
-    <title>Normativas | BajaRP</title>
+    <title>CÛdigo Penal | BajaRP</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -312,8 +312,8 @@
 
             <ul class="nav-links">
                 <li><a href="index.html"><i class="fas fa-home"></i> Inicio</a></li>
-                <li><a href="codigo_penal.html"><i class="fas fa-gavel"></i> CÛdigo Penal</a></li>
-                <li><a href="normativas.html" class="active"><i class="fas fa-book"></i> Normativas</a></li>
+                <li><a href="codigo_penal.html" class="active"><i class="fas fa-gavel"></i> CÛdigo Penal</a></li>
+                <li><a href="normativas.html"><i class="fas fa-book"></i> Normativas</a></li>
                 <li><a href="beneficios.html"><i class="fas fa-star"></i> Beneficios</a></li>
                 <li class="mobile-only"><a href="/auth/discord" class="nav-cta"><i class="fas fa-sign-in-alt"></i> Iniciar Sesi√≥n</a>
                 </li>
@@ -328,8 +328,8 @@
     <!-- Page Header -->
     <header class="page-header" data-aos="fade-down">
         <div class="container">
-            <h1 class="page-title">Normativas del <span>Servidor</span></h1>
-            <p class="page-subtitle">El desconocimiento de la normativa no exime de su cumplimiento.</p>
+            <h1 class="page-title">CÛdigo Penal del <span>Servidor</span></h1>
+            <p class="page-subtitle">Conoce los delitos, multas y tiempos de c·rcel para evitar sanciones dentro de la ciudad.</p>
         </div>
     </header>
 
@@ -397,7 +397,7 @@
 
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
-    <script src="normativas.js"></script>
+    <script src="codigo_penal.js"></script>
     <script src="script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -408,10 +408,10 @@
             const searchInput = document.getElementById('search-rules');
             const noResults = document.getElementById('no-results');
 
-            if (typeof normativasData !== 'undefined') {
+            if (typeof codigoPenalData !== 'undefined') {
 
                 // Generar HTML de la lista y los acordeones
-                normativasData.forEach((item, index) => {
+                codigoPenalData.forEach((item, index) => {
                     // Sidebar
                     const li = document.createElement('li');
                     li.innerHTML = `<a onclick="openAccordion('${item.id}')"><i class="${item.icon}"></i> ${item.title}</a>`;
@@ -447,7 +447,7 @@
                     document.querySelectorAll('.rule-card-accordion').forEach(card => {
                         const id = card.id.replace('rule-', '');
                         // Buscar la data cruda
-                        const dataMatch = normativasData.find(d => d.id === id);
+                        const dataMatch = codigoPenalData.find(d => d.id === id);
                         if (!dataMatch) return;
 
                         const text = (dataMatch.title + ' ' + dataMatch.content).toLowerCase();
@@ -501,4 +501,5 @@
 </body>
 
 </html>
+
 
