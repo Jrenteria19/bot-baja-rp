@@ -333,6 +333,15 @@
             .wl-row { grid-template-columns: 1fr; gap: 10px; text-align: center; }
             .wl-row-btn { width: 100%; }
         }
+        /* Responsive Grid / Flex Layout */
+        @media (max-width: 900px) {
+            .dashboard-wrapper {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 
@@ -551,8 +560,6 @@
         document.addEventListener("DOMContentLoaded", async () => {
             const userNameSpan = document.getElementById("userName");
             const userAvatar = document.getElementById("userAvatar");
-            const adminSidebar = document.getElementById("adminSidebar");
-            const whitelistPanel = document.getElementById("whitelistPanel");
             
             // Cargar info del usuario
             try {
@@ -587,10 +594,15 @@
                     document.getElementById("userSanciones").style.color = "var(--danger-color)";
                 }
                 
-                // Mostrar panel de administración si tiene el rol
+                // Mostrar sección de administración si tiene el rol
                 if (data.is_admin) {
-                    adminSidebar.style.display = "block";
-                    whitelistPanel.style.display = "block";
+                    const adminSection = document.getElementById("adminSection");
+                    if (adminSection) adminSection.style.display = "block";
+                    
+                    // Mostrar panel de whitelist por defecto para los admins
+                    const adminLink = document.querySelector('#adminSection a');
+                    showPanel('whitelistPanel', adminLink);
+                    
                     loadWhitelists();
                 }
 
