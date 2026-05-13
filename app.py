@@ -485,6 +485,149 @@ def handle_economy():
         cursor.close()
         conn.close()
 
+@app.route('/api/cedula', methods=['POST'])
+def handle_cedula():
+    """Maneja las acciones del Registro Civil: ver_propia, ver_otra, crear, eliminar."""
+    if 'user_id' not in session:
+        return {"error": "No has iniciado sesión."}, 401
+        
+    data = request.json
+    action = data.get('action')
+    user_id = int(session['user_id'])
+    
+    conn = get_db_connection()
+    # Use RealDictCursor to easily JSON serialize the row
+    cursor = conn.cursor(cursor_factory=RealDictCursor) if hasattr(conn, 'cursor_factory') else conn.cursor(cursor_factory=RealDictCursor)
+    
+    try:
+        if action == 'ver_propia' or action == 'ver_otra':
+            target_id = user_id if action == 'ver_propia' else int(data.get('target_id', 0))
+            
+            cursor.execute('SELECT * FROM cedulas WHERE discord_id = %s', (target_id,))
+            ine = cursor.fetchone()
+            
+            if not ine:
+                return {"error": "El usuario no cuenta con un registro en el INE."}, 404
+                
+            # Convert values to strings for JSON serializability (dates, integers, etc)
+            ine_data = {
+                "discord_id": str(ine['discord_id']),
+                "rob_user": ine['rob_user'],
+                "nombres": ine['nombres'],
+                "apellidos": ine['apellidos'],
+                "fecha_nac": ine['fecha_nac'],
+                "edad": ine['edad'],
+                "nacionalidad": ine['nacionalidad'],
+                "sexo": "Hombre" if ine['sexo'] == 'H' else "Mujer" if ine['sexo'] == 'M' else ine['sexo'],
+                "curp": ine['curp'],
+                "pfp_url": ine['pfp_url'],
+                "fecha_vencimiento": ine['fecha_vencimiento']
+            }
+            return {"ine": ine_data}
+
+        elif action in ['crear', 'eliminar']:
+            if not session.get('is_admin'):
+                return {"error": "Acceso denegado. Se requieren permisos de Administración."}, 403
+                
+            target_id = data.get('target_id')
+            
+            if action == 'eliminar':
+                # Can delete by Discord ID or CURP
+                cursor.execute('SELECT discord_id FROM cedulas WHERE discord_id = %s OR curp = %s', (target_id, target_id))
+                ine = cursor.fetchone()
+                if not ine:
+                    return {"error": "Registro no encontrado."}, 404
+                    
+                target_discord_id = ine['discord_id']
+                cursor.execute('DELETE FROM cedulas WHERE discord_id = %s', (target_discord_id,))
+                conn.commit()
+                
+                # Send Discord DM to notify them of removal
+                headers = {"Authorization": f"Bot {DISCORD_BOT_TOKEN}", "Content-Type": "application/json"}
+                dm_req = requests.post("https://discord.com/api/users/@me/channels", headers=headers, json={"recipient_id": target_discord_id})
+                if dm_req.status_code == 200:
+                    ch_id = dm_req.json().get('id')
+                    dm_embed = {
+                        "title": "⚖️ ANULACIÓN DE IDENTIDAD",
+                        "description": "Tu Credencial para Votar (INE) ha sido **anulada y eliminada** del sistema por la administración.\n\n*Si consideras que fue un error, abre un ticket.*",
+                        "color": 15158332
+                    }
+                    requests.post(f"https://discord.com/api/channels/{ch_id}/messages", headers=headers, json={"embeds": [dm_embed]})
+                    
+                return {"message": "Registro eliminado exitosamente."}
+                
+            elif action == 'crear':
+                roblox_user = data.get('roblox_user')
+                nombres = data.get('nombres')
+                apellidos = data.get('apellidos')
+                fecha_nac = data.get('fecha_nac')
+                sexo = data.get('sexo')
+                
+                if not all([target_id, roblox_user, nombres, apellidos, fecha_nac, sexo]):
+                    return {"error": "Faltan datos obligatorios."}, 400
+                    
+                # Validar fecha
+                import re, datetime
+                match = re.match(r"^(\d{2})/(\d{2})/(\d{4})$", fecha_nac)
+                if not match:
+                    return {"error": "El formato de fecha debe ser DD/MM/AAAA."}, 400
+                    
+                dia, mes, año = map(int, match.groups())
+                try:
+                    fecha_nac_dt = datetime.date(año, mes, dia)
+                except ValueError:
+                    return {"error": "La fecha proporcionada no es válida."}, 400
+                    
+                hoy = datetime.date.today()
+                edad = hoy.year - fecha_nac_dt.year - ((hoy.month, hoy.day) < (fecha_nac_dt.month, fecha_nac_dt.day))
+                
+                if edad < 18 or edad > 80:
+                    return {"error": f"La persona debe tener entre 18 y 80 años. Edad calculada: {edad}"}, 400
+                    
+                # Fetch roblox avatar via API
+                pfp_url = "https://cdn.discordapp.com/embed/avatars/0.png"
+                try:
+                    rbx_req = requests.post("https://users.roblox.com/v1/usernames/users", json={"usernames": [roblox_user], "excludeBannedUsers": True})
+                    if rbx_req.status_code == 200:
+                        rbx_data = rbx_req.json()
+                        if rbx_data.get('data') and len(rbx_data['data']) > 0:
+                            rbx_id = rbx_data['data'][0]['id']
+                            thumb_req = requests.get(f"https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds={rbx_id}&size=420x420&format=Png&isCircular=false")
+                            if thumb_req.status_code == 200:
+                                thumb_data = thumb_req.json()
+                                if thumb_data.get('data') and len(thumb_data['data']) > 0:
+                                    pfp_url = thumb_data['data'][0]['imageUrl']
+                except Exception as e:
+                    print(f"Error fetching roblox avatar: {e}")
+                    
+                # Generate pseudo CURP
+                import random
+                letras1 = "".join(random.choices("ABCDEFGHIJKLMNOPQRSTUVWXYZ", k=4))
+                nums = f"{random.randint(0, 99):02d}{random.randint(1, 12):02d}{random.randint(1, 28):02d}"
+                letras2 = "".join(random.choices("ABCDEFGHIJKLMNOPQRSTUVWXYZ", k=6))
+                nums2 = f"{random.randint(0, 99):02d}"
+                curp = f"{letras1}{nums}{letras2}{nums2}"
+                
+                vigencia_dt = hoy + datetime.timedelta(days=365)
+                
+                try:
+                    cursor.execute('''
+                        INSERT INTO cedulas (discord_id, rob_user, nombres, apellidos, fecha_nac, edad, nacionalidad, sexo, curp, pfp_url, fecha_vencimiento)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    ''', (target_id, roblox_user, nombres, apellidos, fecha_nac, edad, "México", sexo, curp, pfp_url, vigencia_dt.strftime("%d/%m/%Y")))
+                    conn.commit()
+                except Exception as e:
+                    return {"error": "El usuario ya tiene un registro activo."}, 400
+                    
+                return {"message": f"INE generado exitosamente para {target_id}. CURP: {curp}"}
+
+    except Exception as e:
+        print(f"Error en cedula API: {e}")
+        return {"error": "Error interno al procesar la solicitud."}, 500
+    finally:
+        cursor.close()
+        conn.close()
+
 # =====================================================================
 # INICIALIZACIÓN DEL SERVIDOR WEB
 # =====================================================================
