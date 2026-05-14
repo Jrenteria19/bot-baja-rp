@@ -14,8 +14,21 @@ def main():
     print("✅ Flask (app.py) iniciado.", flush=True)
     
     # Iniciar main.py (Discord Bot)
-    bot_process = subprocess.Popen([sys.executable, "-u", "main.py"], cwd=current_dir)
+    bot_process = subprocess.Popen(
+        [sys.executable, "-u", "main.py"], 
+        cwd=current_dir,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True
+    )
     print("✅ Discord Bot (main.py) iniciado.", flush=True)
+    
+    import threading
+    def print_bot_output():
+        for line in bot_process.stdout:
+            print(f"[BOT] {line}", end="", flush=True)
+            
+    threading.Thread(target=print_bot_output, daemon=True).start()
     
     try:
         # Monitorear que ambos procesos sigan corriendo
