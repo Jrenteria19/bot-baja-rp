@@ -46,14 +46,14 @@ class ServidorBot(commands.Bot):
             if filename.endswith('.py') and not filename.startswith('__'):
                 try:
                     await self.load_extension(f'comandos.{filename[:-3]}')
-                    print(f'✅ Comando cargado: {filename}')
+                    print(f'Comando cargado: {filename}')
                 except Exception as e:
                     print(f'Error al cargar el comando {filename}: {e}')
 
         # Sincronización de Slash Commands con Discord
         try:
             synced = await self.tree.sync()
-            print(f'🌐 Sincronizados {len(synced)} comandos de barra (slash commands).')
+            print(f'Sincronizados {len(synced)} comandos de barra (slash commands).')
         except Exception as e:
             print(f'Error al sincronizar comandos de barra: {e}')
 
@@ -69,10 +69,10 @@ class ServidorBot(commands.Bot):
         Cambia el "Jugando a..." del bot cada 20 segundos de forma rotativa.
         """
         estados = [
-            "🏙️ la comunidad",
-            "🛠️ Bot desarrollado por: Smile",
-            "🌐 bot-baja-rp.onrender.com",
-            "🛡️ BajaRP"
+            "la comunidad",
+            "Bot desarrollado por: Smile",
+            "bot-baja-rp.onrender.com",
+            "BajaRP"
         ]
         
         # Seleccionamos el mensaje según el tiempo (rotación infinita)
@@ -94,13 +94,13 @@ class ServidorBot(commands.Bot):
         if isinstance(error, commands.CommandNotFound):
             return # Ignoramos si alguien escribe '!comando_que_no_existe'
         else:
-            print(f'⚠️ Error en comando: {error}')
+            print(f'Error en comando: {error}')
 
     async def on_ready(self):
         """Evento que se dispara cuando el bot se ha conectado exitosamente."""
         print('\n' + '='*40)
-        print(f'🤖 Bot Logueado como: {self.user.name}')
-        print(f'🆔 ID del Bot: {self.user.id}')
+        print(f'Bot Logueado como: {self.user.name}')
+        print(f'ID del Bot: {self.user.id}')
         print('='*40 + '\n')
 
 # =====================================================================
@@ -111,6 +111,6 @@ bot = ServidorBot()
 if __name__ == '__main__':
     # Verificación final antes de arrancar
     if not TOKEN:
-        print("❌ ERROR: No se encontró el DISCORD_TOKEN en el archivo .env")
+        print("ERROR: No se encontró el DISCORD_TOKEN en el archivo .env o variables de entorno")
     else:
         bot.run(TOKEN)
