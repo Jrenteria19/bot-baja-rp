@@ -46,9 +46,9 @@ class ConsultarSanciones(commands.Cog):
         # Establecer a quién buscaremos en la DB
         objetivo = usuario if usuario is not None else interaction.user
 
-        # 3. Consulta a la Base de Datos MySQL
+        # 3. Consulta a la Base de Datos
         try:
-            import mysql.connector
+            import psycopg2
             conn = get_db_connection()
             cursor = conn.cursor()
             
@@ -56,7 +56,7 @@ class ConsultarSanciones(commands.Cog):
             cursor.execute('SELECT tipo, razon, prueba FROM sanciones WHERE usuario_id = %s ORDER BY id ASC', (objetivo.id,))
             resultados = cursor.fetchall()
             conn.close()
-        except mysql.connector.Error as e:
+        except psycopg2.Error as e:
             await interaction.followup.send(f"❌ Ocurrió un error al contactar con la base de datos: {e}", ephemeral=True)
             return
 

@@ -55,18 +55,18 @@ class INE(commands.Cog):
             )
         ''')
         try:
-            cursor.execute('ALTER TABLE cedulas ADD COLUMN fecha_vencimiento VARCHAR(50)')
-        except mysql.connector.Error:
+            cursor.execute('ALTER TABLE cedulas ADD COLUMN IF NOT EXISTS fecha_vencimiento VARCHAR(50)')
+        except psycopg2.Error:
             pass 
             
         try:
-            cursor.execute('ALTER TABLE cedulas CHANGE run curp VARCHAR(50)')
-        except mysql.connector.Error:
+            cursor.execute('ALTER TABLE cedulas RENAME COLUMN run TO curp')
+        except psycopg2.Error:
             pass 
             
         try:
-            cursor.execute('CREATE UNIQUE INDEX idx_cedulas_curp ON cedulas(curp)')
-        except mysql.connector.Error:
+            cursor.execute('CREATE UNIQUE INDEX IF NOT EXISTS idx_cedulas_curp ON cedulas(curp)')
+        except psycopg2.Error:
             pass 
         conn.commit()
         conn.close()

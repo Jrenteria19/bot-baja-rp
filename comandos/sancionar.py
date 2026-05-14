@@ -26,8 +26,8 @@ class Sancionar(commands.Cog):
         self.init_db()
 
     def init_db(self):
-        import mysql.connector
-        # Crear la estructura de Base de datos en MySQL
+        import psycopg2
+        # Crear la estructura de Base de datos
         conn = get_db_connection()
         cursor = conn.cursor()
         cursor.execute('''
@@ -42,7 +42,7 @@ class Sancionar(commands.Cog):
         # Añade la columna si ya estaba la tabla antes (en caso de actualización sin perder datos)
         try:
             cursor.execute("ALTER TABLE sanciones ADD COLUMN prueba TEXT;")
-        except mysql.connector.Error:
+        except psycopg2.Error:
             pass # Si ya existe no hay que crearla
         conn.commit()
         conn.close()
