@@ -34,7 +34,7 @@ class INE(commands.Cog):
         self.verificador_vencimiento.cancel()
 
     def init_db(self):
-        import mysql.connector
+        import psycopg2
         conn = get_db_connection()
         cursor = conn.cursor()
         cursor.execute('''
