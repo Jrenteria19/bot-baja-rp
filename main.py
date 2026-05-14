@@ -48,14 +48,14 @@ class ServidorBot(commands.Bot):
                     await self.load_extension(f'comandos.{filename[:-3]}')
                     print(f'✅ Comando cargado: {filename}')
                 except Exception as e:
-                    print(f'❌ Error al cargar el comando {filename}: {e}')
+                    print(f'Error al cargar el comando {filename}: {e}')
 
         # Sincronización de Slash Commands con Discord
         try:
             synced = await self.tree.sync()
             print(f'🌐 Sincronizados {len(synced)} comandos de barra (slash commands).')
         except Exception as e:
-            print(f'❌ Error al sincronizar comandos de barra: {e}')
+            print(f'Error al sincronizar comandos de barra: {e}')
 
         # Iniciar el bucle de estado dinámico
         self.cambiar_estado.start()
