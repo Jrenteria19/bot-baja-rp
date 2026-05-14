@@ -23,11 +23,13 @@ def main():
             time.sleep(1)
             
             if flask_process.poll() is not None:
-                print("⚠️ El proceso de la aplicación web (app.py) se detuvo inesperadamente.", flush=True)
+                code = flask_process.poll()
+                print(f"⚠️ El proceso de la aplicación web (app.py) se detuvo inesperadamente con código: {code}", flush=True)
                 break
                 
             if bot_process.poll() is not None:
-                print("⚠️ El proceso del bot de Discord (main.py) se detuvo inesperadamente.", flush=True)
+                code = bot_process.poll()
+                print(f"⚠️ El proceso del bot de Discord (main.py) se detuvo inesperadamente con código: {code}", flush=True)
                 break
                 
     except KeyboardInterrupt:
