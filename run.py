@@ -10,11 +10,11 @@ def main():
     print("Iniciando la aplicación web (Flask) y el bot de Discord...")
     
     # Iniciar app.py (Flask Web App)
-    flask_process = subprocess.Popen([sys.executable, "app.py"], cwd=current_dir)
+    flask_process = subprocess.Popen([sys.executable, "-u", "app.py"], cwd=current_dir)
     print("✅ Flask (app.py) iniciado.")
     
     # Iniciar main.py (Discord Bot)
-    bot_process = subprocess.Popen([sys.executable, "main.py"], cwd=current_dir)
+    bot_process = subprocess.Popen([sys.executable, "-u", "main.py"], cwd=current_dir)
     print("✅ Discord Bot (main.py) iniciado.")
     
     try:
