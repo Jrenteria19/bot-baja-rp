@@ -10,8 +10,8 @@ from dotenv import load_dotenv
 # Cargar las variables de entorno desde el archivo .env
 load_dotenv()
 
-# Obtener el Token del Bot
-TOKEN = os.getenv('DISCORD_TOKEN')
+# Obtener el Token del Bot (con fallback por si está nombrado distinto)
+TOKEN = os.getenv('DISCORD_TOKEN') or os.getenv('DISCORD_BOT_TOKEN')
 
 # =====================================================================
 # CLASE PRINCIPAL DEL BOT
@@ -106,11 +106,21 @@ class ServidorBot(commands.Bot):
 # =====================================================================
 # INICIALIZACIÓN DEL SCRIPT
 # =====================================================================
+import sys
+import traceback
+
+def global_exception_handler(exctype, value, tb):
+    print("UNHANDLED EXCEPTION IN MAIN.PY:", flush=True)
+    traceback.print_exception(exctype, value, tb)
+    sys.__excepthook__(exctype, value, tb)
+
+sys.excepthook = global_exception_handler
+
 bot = ServidorBot()
 
 if __name__ == '__main__':
     # Verificación final antes de arrancar
     if not TOKEN:
-        print("ERROR: No se encontró el DISCORD_TOKEN en el archivo .env o variables de entorno")
+        print("ERROR: No se encontró el DISCORD_TOKEN en el archivo .env o variables de entorno", flush=True)
     else:
         bot.run(TOKEN)
